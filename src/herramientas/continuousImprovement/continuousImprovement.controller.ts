@@ -38,9 +38,8 @@ export class ContinuousImprovementController {
     }));
     const mckinseys = await this.mckinseyService.getAllByProjectId(projectId);
     const okrs = await this.okrService.getAllByProjectId(projectId);
-    const balancedScorecards = await this.balancedService.getAllByProjectId(
-      projectId,
-    );
+    const balancedScorecards =
+      await this.balancedService.getAllByProjectId(projectId);
     return {
       fodas: fodas.slice(0, 2),
       pestels: pestels.slice(0, 1),

@@ -171,9 +171,9 @@ export class PorterService {
 
     let puntajeTotal = 0;
     preguntasConPuntaje.forEach(
-      (value, _) => (puntajeTotal = puntajeTotal + value),
+      (value) => (puntajeTotal = puntajeTotal + value),
     );
-    const consejoGeneral = this.calcularConsejoGeneral(puntajeTotal, fuerza);
+    const consejoGeneral = this.calcularConsejoGeneral(puntajeTotal);
 
     return {
       fuerza: fuerza,
@@ -186,7 +186,7 @@ export class PorterService {
     };
   }
 
-  private calcularConsejoGeneral(puntajeTotal: number, fuerza: Fuerza) {
+  private calcularConsejoGeneral(puntajeTotal: number) {
     if (puntajeTotal > 40)
       return 'Este índice es muy alto, lo que quiere decir que su estrategia debe siempre tener en cuenta esta fuerza a la hora de planear un cambio o transformación. Siga los consejos priorizados de acuerdo a su situación.';
     else if (puntajeTotal > 30)

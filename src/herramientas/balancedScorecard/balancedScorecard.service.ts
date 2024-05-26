@@ -51,9 +51,8 @@ export class BalancedScorecardService {
   }
 
   async findObjectiveById(balancedScorecardId: string, objectiveId: string) {
-    const balancedScorecard = await this.balancedScorecardModel.findById(
-      balancedScorecardId,
-    );
+    const balancedScorecard =
+      await this.balancedScorecardModel.findById(balancedScorecardId);
 
     return balancedScorecard.objectives.find(
       (objective) => objective._id.toString() == objectiveId,

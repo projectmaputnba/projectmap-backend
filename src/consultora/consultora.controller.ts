@@ -50,10 +50,7 @@ export class ConsultoraController {
   }
 
   @Put(':consultoraId/admin')
-  async removeAdmin(
-    @Param('consultoraId') consultoraId: string,
-    @Body() consultant: ConsultantDto,
-  ) {
+  async removeAdmin(@Param('consultoraId') consultoraId: string) {
     return this.consultoraService.removeAdmin(consultoraId);
   }
 

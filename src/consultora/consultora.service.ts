@@ -33,9 +33,8 @@ export class ConsultoraService {
   }
 
   async update(consultoraId: string, consultoraDto: ConsultoraDto) {
-    const consultora: Consultora = await this.consultoraModel.findById(
-      consultoraId,
-    );
+    const consultora: Consultora =
+      await this.consultoraModel.findById(consultoraId);
     consultora.name = consultoraDto.name;
     await new this.consultoraModel(consultora).save();
     return this.findById(consultoraId);
@@ -46,9 +45,8 @@ export class ConsultoraService {
   }
 
   async assignNewConsultant(consultoraId: string, userEmail: string) {
-    const consultora: Consultora = await this.consultoraModel.findById(
-      consultoraId,
-    );
+    const consultora: Consultora =
+      await this.consultoraModel.findById(consultoraId);
 
     const user = await this.userService
       .findUserByEmail(userEmail)
@@ -67,9 +65,8 @@ export class ConsultoraService {
   }
 
   async removeConsultor(consultoraId: string, userEmail: string) {
-    const consultora: Consultora = await this.consultoraModel.findById(
-      consultoraId,
-    );
+    const consultora: Consultora =
+      await this.consultoraModel.findById(consultoraId);
 
     const user = await this.userService
       .findUserByEmail(userEmail)
@@ -92,9 +89,8 @@ export class ConsultoraService {
     userEmail: string,
     projectIds: string[],
   ) {
-    const consultora: Consultora = await this.consultoraModel.findById(
-      consultoraId,
-    );
+    const consultora: Consultora =
+      await this.consultoraModel.findById(consultoraId);
 
     this.checkProjectsBelongToConsultora(projectIds, consultora);
 
@@ -147,9 +143,8 @@ export class ConsultoraService {
   }
 
   async removeAdmin(consultoraId: string) {
-    const consultora: Consultora = await this.consultoraModel.findById(
-      consultoraId,
-    );
+    const consultora: Consultora =
+      await this.consultoraModel.findById(consultoraId);
 
     consultora.admin = undefined;
 
