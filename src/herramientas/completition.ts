@@ -1,5 +1,5 @@
 export enum Completition {
-  Completo = 'Completo',
-  Incompleto = 'Incompleto',
-  Vacio = 'Vacio',
+    Completo = 'Completo',
+    Incompleto = 'Incompleto',
+    Vacio = 'Vacio',
 }

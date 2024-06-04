@@ -1,13 +1,13 @@
-import { Tool } from '../herramientas/tools';
+import { Tool } from '../herramientas/tools'
 
 export class StickyNoteDto {
-  projectId: string;
+    projectId: string
 
-  text: string;
+    text: string
 
-  position: number;
+    position: number
 
-  tool: Tool;
+    tool: Tool
 
-  toolId: string;
+    toolId: string
 }

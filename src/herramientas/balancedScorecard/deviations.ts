@@ -1,5 +1,5 @@
 export enum Deviation {
-  None = 'None',
-  Acceptable = 'Acceptable',
-  Risky = 'Risky',
+    None = 'None',
+    Acceptable = 'Acceptable',
+    Risky = 'Risky',
 }

@@ -1,47 +1,47 @@
-import { Roles } from './user.roles';
-import { ApiProperty } from '@nestjs/swagger';
+import { Roles } from './user.roles'
+import { ApiProperty } from '@nestjs/swagger'
 
 export class UserDto {
-  @ApiProperty()
-  email: string;
+    @ApiProperty()
+    email: string
 
-  @ApiProperty()
-  password: string;
+    @ApiProperty()
+    password: string
 }
 
 export class CreateUserDto {
-  @ApiProperty()
-  firstName: string;
+    @ApiProperty()
+    firstName: string
 
-  @ApiProperty()
-  lastName: string;
+    @ApiProperty()
+    lastName: string
 
-  @ApiProperty()
-  password: string;
+    @ApiProperty()
+    password: string
 
-  @ApiProperty()
-  confirmPassword: string;
+    @ApiProperty()
+    confirmPassword: string
 
-  @ApiProperty()
-  email: string;
+    @ApiProperty()
+    email: string
 
-  @ApiProperty()
-  type: Roles;
+    @ApiProperty()
+    type: Roles
 
-  @ApiProperty()
-  biography: string;
+    @ApiProperty()
+    biography: string
 }
 
 export class UpdateUserDto {
-  @ApiProperty()
-  firstName: string;
+    @ApiProperty()
+    firstName: string
 
-  @ApiProperty()
-  lastName: string;
+    @ApiProperty()
+    lastName: string
 
-  @ApiProperty()
-  calendlyUser: string;
+    @ApiProperty()
+    calendlyUser: string
 
-  @ApiProperty()
-  biography: string;
+    @ApiProperty()
+    biography: string
 }

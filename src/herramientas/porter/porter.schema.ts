@@ -1,78 +1,79 @@
-import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import mongoose from 'mongoose';
-import { Completition } from '../completition';
-import { Fuerza } from './fuerza';
-import { NivelDeConcordancia } from './nivelDeConcordancia';
-import { Preguntas } from './preguntas';
-import { Valoracion } from './valoracion';
+import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose'
+import mongoose from 'mongoose'
+import { Completition } from '../completition'
+import { Fuerza } from './fuerza'
+import { NivelDeConcordancia } from './nivelDeConcordancia'
+import { Preguntas } from './preguntas'
+import { Valoracion } from './valoracion'
 
-export type PorterDocument = Porter & Document;
+export type PorterDocument = Porter & Document
 
 @Schema()
 export class Pregunta {
-  _id: mongoose.Types.ObjectId;
+    _id: mongoose.Types.ObjectId
 
-  @Prop({ type: Number, required: true })
-  preguntaId: number;
+    @Prop({ type: Number, required: true })
+    preguntaId: number
 
-  @Prop({ type: String, enum: Fuerza, required: true })
-  fuerza: string;
+    @Prop({ type: String, enum: Fuerza, required: true })
+    fuerza: string
 
-  @Prop({ type: String, enum: NivelDeConcordancia, required: true })
-  nivelDeConcordancia: string;
+    @Prop({ type: String, enum: NivelDeConcordancia, required: true })
+    nivelDeConcordancia: string
 
-  @Prop({ type: String, enum: Valoracion, required: true })
-  valoracion: string;
+    @Prop({ type: String, enum: Valoracion, required: true })
+    valoracion: string
 
-  constructor(
-    preguntaId: number,
-    fuerza: Fuerza,
-    nivelDeConcordancia: NivelDeConcordancia,
-    valoracion: Valoracion,
-  ) {
-    this.preguntaId = preguntaId;
-    this.fuerza = fuerza.valueOf();
-    this.nivelDeConcordancia = nivelDeConcordancia.valueOf();
-    this.valoracion = valoracion.valueOf();
-  }
+    constructor(
+        preguntaId: number,
+        fuerza: Fuerza,
+        nivelDeConcordancia: NivelDeConcordancia,
+        valoracion: Valoracion
+    ) {
+        this.preguntaId = preguntaId
+        this.fuerza = fuerza.valueOf()
+        this.nivelDeConcordancia = nivelDeConcordancia.valueOf()
+        this.valoracion = valoracion.valueOf()
+    }
 }
 
-const preguntaSchema = SchemaFactory.createForClass(Pregunta);
+const preguntaSchema = SchemaFactory.createForClass(Pregunta)
 
 @Schema()
 export class Porter {
-  @Prop({ required: true })
-  projectId: string;
+    @Prop({ required: true })
+    projectId: string
 
-  @Prop({ type: String })
-  titulo: string;
+    @Prop({ type: String })
+    titulo: string
 
-  @Prop({ type: Date, default: Date.now })
-  createdAt: Date;
+    @Prop({ type: Date, default: Date.now })
+    createdAt: Date
 
-  @Prop([preguntaSchema])
-  preguntas: Pregunta[];
+    @Prop([preguntaSchema])
+    preguntas: Pregunta[]
 
-  @Prop({ type: Object })
-  preguntasFormatted: any;
+    @Prop({ type: Object })
+    preguntasFormatted: any
 
-  @Prop({ type: String, default: Completition.Vacio })
-  completion: Completition;
+    @Prop({ type: String, default: Completition.Vacio })
+    completion: Completition
 }
 
-export const porterSchema = SchemaFactory.createForClass(Porter);
+export const porterSchema = SchemaFactory.createForClass(Porter)
 porterSchema.pre('save', function (next) {
-  const numberOfQuestionsToAnswer =
-    Preguntas.rivalidadEntreCompetidores.length +
-    Preguntas.amenazaDeNuevosCompetidores.length +
-    Preguntas.amenazaDeSustitucion.length +
-    Preguntas.poderDeNegociacionConProveedores.length +
-    Preguntas.poderDeNegociacionConProveedores.length;
+    const numberOfQuestionsToAnswer =
+        Preguntas.rivalidadEntreCompetidores.length +
+        Preguntas.amenazaDeNuevosCompetidores.length +
+        Preguntas.amenazaDeSustitucion.length +
+        Preguntas.poderDeNegociacionConProveedores.length +
+        Preguntas.poderDeNegociacionConProveedores.length
 
-  const incompleteQuestions = this.preguntas.length - numberOfQuestionsToAnswer;
-  if (incompleteQuestions == 0) this.completion = Completition.Completo;
-  else if (this.preguntas.length == 0) this.completion = Completition.Vacio;
-  else this.completion = Completition.Incompleto;
+    const incompleteQuestions =
+        this.preguntas.length - numberOfQuestionsToAnswer
+    if (incompleteQuestions == 0) this.completion = Completition.Completo
+    else if (this.preguntas.length == 0) this.completion = Completition.Vacio
+    else this.completion = Completition.Incompleto
 
-  next();
-});
+    next()
+})

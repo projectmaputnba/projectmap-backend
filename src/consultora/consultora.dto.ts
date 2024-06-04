@@ -1,22 +1,22 @@
-import { ApiProperty } from '@nestjs/swagger';
+import { ApiProperty } from '@nestjs/swagger'
 
 export class ConsultoraDto {
-  @ApiProperty()
-  name: string;
+    @ApiProperty()
+    name: string
 
-  @ApiProperty()
-  projects: string[];
+    @ApiProperty()
+    projects: string[]
 }
 
 export class ConsultantDto {
-  @ApiProperty()
-  email: string;
+    @ApiProperty()
+    email: string
 }
 
 export class AssignProjectDto {
-  @ApiProperty()
-  email: string;
+    @ApiProperty()
+    email: string
 
-  @ApiProperty()
-  projects: string[];
+    @ApiProperty()
+    projects: string[]
 }

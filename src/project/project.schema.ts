@@ -1,22 +1,22 @@
-import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import * as mongoose from 'mongoose';
-import { User } from '../user/user.schema';
+import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose'
+import * as mongoose from 'mongoose'
+import { User } from '../user/user.schema'
 
 @Schema()
 export class Project {
-  _id: mongoose.Types.ObjectId;
+    _id: mongoose.Types.ObjectId
 
-  @Prop({ type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true })
-  owner: User;
+    @Prop({ type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true })
+    owner: User
 
-  @Prop({ type: String, require: true })
-  titulo: string;
+    @Prop({ type: String, require: true })
+    titulo: string
 
-  @Prop({ type: String, require: true })
-  descripcion: string;
+    @Prop({ type: String, require: true })
+    descripcion: string
 
-  @Prop({ type: String, require: true })
-  color: string;
+    @Prop({ type: String, require: true })
+    color: string
 }
 
-export const ProjectSchema = SchemaFactory.createForClass(Project);
+export const ProjectSchema = SchemaFactory.createForClass(Project)

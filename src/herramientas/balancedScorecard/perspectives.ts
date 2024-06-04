@@ -1,6 +1,6 @@
 export enum Area {
-  Financiera = 'Financiera',
-  Clientes = 'Clientes',
-  ProcesosInternos = 'Procesos Internos',
-  Aprendizaje = 'Aprendizaje',
+    Financiera = 'Financiera',
+    Clientes = 'Clientes',
+    ProcesosInternos = 'Procesos Internos',
+    Aprendizaje = 'Aprendizaje',
 }
