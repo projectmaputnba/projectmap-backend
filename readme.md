@@ -12,7 +12,7 @@ Required env vars:
 
 - MONGO_URI
 - SECRET_KEY
-- SENDGRID_API_KEY
+- SENDGRID_API_KEY (only to have Sendgrid integration)
 - PORT
 
 ## Running the app
