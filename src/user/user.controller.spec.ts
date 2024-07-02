@@ -1,37 +1,40 @@
-import mongoose from 'mongoose'
+import { Test, TestingModule } from '@nestjs/testing'
+import { UserController } from './user.controller'
 import { User } from './user.schema'
 import { UserService } from './user.service'
-import { Test, TestingModule } from '@nestjs/testing'
-import { getModelToken } from '@nestjs/mongoose'
 
 describe('UserController', () => {
-    let userModel: mongoose.Model<User>
     let userService: UserService
+    let userController: UserController
+    const testUser = new User()
+    testUser.firstName = 'Pepe'
+
     beforeAll(async () => {
         const module: TestingModule = await Test.createTestingModule({
+            controllers: [UserController],
             providers: [
                 {
-                    provide: getModelToken(User.name),
-                    useValue: mongoose.Model, // <-- Use the Model Class from Mongoose
+                    provide: UserService,
+
+                    useValue: {
+                        findById: jest.fn().mockResolvedValueOnce(testUser),
+                        // populate: jest.fn().mockResolvedValue(testUser),
+                    },
                 },
                 UserService,
             ],
         }).compile()
-        userModel = module.get<mongoose.Model<User>>(getModelToken(User.name))
         userService = module.get<UserService>(UserService)
+        userController = module.get<UserController>(UserController)
     })
 
-    describe('findByPayload', () => {
-        it('should find user by an email', async () => {
-            const testUser = new User()
-            testUser.firstName = 'Pepe'
+    describe('findById', () => {
+        it('should find user by id', async () => {
             const spy = jest
-                .spyOn(userModel, 'findOne')
-                .mockResolvedValue(testUser as User)
-
-            await userService.findByPayload({ email: 'foo@bar.com' })
-            // expect(await userController.findById('foo')).toBe(testUser)
-            expect(spy).toHaveBeenCalled()
+                .spyOn(userService, 'findById')
+                .mockResolvedValue(testUser)
+            await userController.findById('foo')
+            expect(spy).toHaveBeenCalledWith('foo')
         })
     })
 })
