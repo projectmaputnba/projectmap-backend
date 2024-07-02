@@ -49,7 +49,7 @@ export class UserService {
         return this.userModel.findOne({ email })
     }
 
-    async findById(id: string): Promise<User> {
+    async findById(id: string) {
         return this.userModel
             .findById(id)
             .populate(['sharedProjects', 'consultora'])
