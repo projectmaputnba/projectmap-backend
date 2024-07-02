@@ -10,10 +10,7 @@ async function bootstrap() {
     const app = await NestFactory.create(AppModule)
     app.enableCors()
 
-    const config = new DocumentBuilder()
-        .setTitle('ProjectMap API')
-        .setDescription('Bufa Campeon')
-        .build()
+    const config = new DocumentBuilder().setTitle('ProjectMap API').build()
     const options: SwaggerDocumentOptions = {
         operationIdFactory: (controllerKey: string, methodKey: string) =>
             methodKey,

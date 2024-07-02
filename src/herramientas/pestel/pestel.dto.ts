@@ -20,18 +20,18 @@ export class PestelDto {
 }
 
 export class FactorDto {
-    @ApiProperty()
+    @ApiProperty({ enum: Area })
     area: Area
 
     @ApiProperty()
     descripcion: string
 
-    @ApiProperty()
+    @ApiProperty({ enum: Importancia })
     importancia: Importancia
 
-    @ApiProperty()
+    @ApiProperty({ enum: Intensidad })
     intensidad: Intensidad
 
-    @ApiProperty()
+    @ApiProperty({ enum: Tendencia })
     tendencia: Tendencia
 }

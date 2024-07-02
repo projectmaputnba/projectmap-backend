@@ -1,8 +1,7 @@
 import * as mongoose from 'mongoose'
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose'
-import { Roles } from './user.roles'
-import { Project } from '../project/project.schema'
-import { Consultora } from '../consultora/consultora.schema'
+import type { Project } from '../project/project.schema'
+import type { Consultora } from '../consultora/consultora.schema'
 
 @Schema()
 export class User {
@@ -36,3 +35,14 @@ export class User {
     biography: string
 }
 export const UserSchema = SchemaFactory.createForClass(User)
+
+export enum Roles {
+    Free = 'Free',
+    Premium = 'Premium',
+    Consultant = 'Consultant',
+    ConsultantAdmin = 'ConsultantAdmin',
+}
+
+export function isConsultor(user: User) {
+    return user.role == Roles.Consultant || user.role == Roles.ConsultantAdmin
+}

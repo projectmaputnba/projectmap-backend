@@ -25,15 +25,15 @@ export class AnsoffProductDto {
     @ApiProperty()
     nombre: string
 
-    @ApiProperty()
+    @ApiProperty({ enum: SituacionDelMercado })
     situacionDelMercado: SituacionDelMercado
 
-    @ApiProperty()
+    @ApiProperty({ enum: SituacionDelProducto })
     situacionDelProducto: SituacionDelProducto
 
-    @ApiProperty()
+    @ApiProperty({ enum: Exito })
     exito: Exito
 
-    @ApiProperty()
+    @ApiProperty({ enum: Estrategia })
     estrategia: Estrategia
 }

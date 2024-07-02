@@ -28,13 +28,13 @@ export class PreguntaDto {
     @ApiProperty()
     preguntaId: number
 
-    @ApiProperty()
+    @ApiProperty({ enum: Fuerza })
     fuerza: Fuerza
 
-    @ApiProperty()
+    @ApiProperty({ enum: NivelDeConcordancia })
     nivelDeConcordancia: NivelDeConcordancia
 
-    @ApiProperty()
+    @ApiProperty({ enum: Valoracion })
     valoracion: Valoracion
 }
 
@@ -43,9 +43,9 @@ export class BulkEditQuestions {
 }
 
 export class BulkQuestionItem {
-    @ApiProperty()
+    @ApiProperty({ enum: NivelDeConcordancia })
     nivelDeConcordancia: NivelDeConcordancia
 
-    @ApiProperty()
+    @ApiProperty({ enum: Valoracion })
     valoracion: Valoracion
 }

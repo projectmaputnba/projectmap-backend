@@ -1,7 +1,7 @@
 import { Body, Controller, Get, Param, Put, Query } from '@nestjs/common'
 import { UserService } from './user.service'
 import { ApiTags } from '@nestjs/swagger'
-import { Roles } from './user.roles'
+import { Roles } from './user.schema'
 import { UpdateUserDto } from './user.dto'
 
 @ApiTags('users')
