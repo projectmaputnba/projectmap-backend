@@ -1,25 +1,25 @@
-@startuml
-skinparam backgroundColor #FEFECE
+@startuml projectMap
 skinparam componentStyle uml2
 
-actor User as Actor
-package "React Frontend" {
+:Usuario:
+
+package "ProjectMap" {
+  package "Frontend" {
     [React App]
 }
 
 cloud {
-    database MongoDBAtlas {
+    database MongoDB {
         [Collections]
     }
 }
 
-package "Nest.js Backend" {
+package "Backend" {
     [Nest.js Server]
 }
 
-Actor --> [React App] : Interacts with UI
-[React App] --> [Nest.js Server] : HTTP Requests
-[Nest.js Server] --> [Collections] : MongoDB Queries
-
+:Usuario: ---> [React App] : Interacción con el sitio web
+[React App] ---> [Nest.js Server] : HTTP
+[Nest.js Server] ---> [Collections] : Queries a MongoDB
+}
 @enduml
-
