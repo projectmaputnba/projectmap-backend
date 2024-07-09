@@ -18,8 +18,11 @@ package "Backend" {
     [Nest.js Server]
 }
 
-:Usuario: ---> [React App] : Interacción con el sitio web
-[React App] ---> [Nest.js Server] : HTTP
-[Nest.js Server] ---> [Collections] : Queries a MongoDB
+:Usuario: ---> [React App] : Request
+[React App] ---> :Usuario: : Response
+[Nest.js Server] ---> [React App]: Response
+[React App] ---> [Nest.js Server] : Queries HTTP
+[Nest.js Server] ---> [Collections] : DB Queries
+[Collections]  --->  [Nest.js Server] : Data
 }
 @enduml
