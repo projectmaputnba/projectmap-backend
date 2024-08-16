@@ -22,7 +22,7 @@ export class ProjectService {
     }
 
     async create(req: ProjectDto) {
-        if (!this.userService.validateAdmin(req.requestorId)) {
+        if (!this.userService.isAdmin(req.requestorId)) {
             throw new HttpException('No autorizado', HttpStatus.FORBIDDEN)
         }
         if (!req.titulo || !req.descripcion || !req.color) {
@@ -108,11 +108,11 @@ export class ProjectService {
             )
             console.log({ user })
             if (user) {
-                user.spehres = participantDto.spheres
+                user.spheres = participantDto.spheres
             } else {
                 project.participants.push({
                     userEmail: participantDto.userEmail,
-                    spehres: participantDto.spheres,
+                    spheres: participantDto.spheres,
                 })
             }
         }
@@ -137,5 +137,55 @@ export class ProjectService {
         }
 
         return project.save()
+    }
+
+    async addUserToProject(
+        projectId: string,
+        userEmail: string,
+        role: string,
+        requestorId: string
+    ) {
+        const isAdmin = await this.userService.isAdmin(requestorId)
+        if (!isAdmin) {
+            throw new HttpException('No autorizado', HttpStatus.FORBIDDEN)
+        }
+        if (!projectId || !userEmail || !role) {
+            throw new HttpException('Campos faltantes', HttpStatus.BAD_REQUEST)
+        }
+        if (!this.isValidRole(role)) {
+            throw new HttpException('Rol invalido', HttpStatus.BAD_REQUEST)
+        }
+
+        const project = await this.projectModel.findById(projectId)
+        if (!project) {
+            throw new HttpException(
+                'Proyecto no encontrado',
+                HttpStatus.NOT_FOUND
+            )
+        }
+
+        if (
+            project.participants.some((p) => p.userEmail == userEmail) ||
+            project.coordinators.some((c) => c.email == userEmail)
+        ) {
+            throw new HttpException(
+                'Usuario ya existe en el proyecto',
+                HttpStatus.BAD_REQUEST
+            )
+        }
+
+        switch (role) {
+            case 'participant':
+                project.participants.push({ userEmail, spheres: [] })
+                break
+            case 'coordinator':
+                project.coordinators.push({ email: userEmail })
+                break
+        }
+        project.save()
+    }
+
+    private isValidRole(role: string) {
+        return role == 'participant' || role == 'coordinator'
     }
 }

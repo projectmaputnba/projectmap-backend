@@ -157,10 +157,11 @@ export class UserService {
             )
     }
 
-    async validateAdmin(userId: string) {
+    async isAdmin(userId: string) {
         const user = await this.userModel.findById(userId)
-        if (!user.isAdmin) {
-            throw new HttpException('No autorizado', HttpStatus.FORBIDDEN)
+        if (!user) {
+            return false
         }
+        return user.isAdmin
     }
 }

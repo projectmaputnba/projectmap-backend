@@ -215,4 +215,24 @@ export class ProjectController {
         )
         return project
     }
+
+    @Post(':id/user/add')
+    async addUserToProject(
+        @Req() header: { user: { id: string } },
+        @Param('id') projectId: string,
+        @Body()
+        req: {
+            userEmail: string
+            role: string
+        }
+    ) {
+        const { id } = header.user
+        const project = await this.projectService.addUserToProject(
+            projectId,
+            req.userEmail,
+            req.role,
+            id
+        )
+        return project
+    }
 }
