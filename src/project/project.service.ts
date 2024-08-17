@@ -1,10 +1,11 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common'
 import { InjectModel } from '@nestjs/mongoose'
-import { Model } from 'mongoose'
+import mongoose, { Model } from 'mongoose'
 import { UserService } from '../user/user.service'
-import { ProjectDto, UpdateParticipantDto } from './project.dto'
+import { ProjectDto, toParticipant, UpdateUserRolesDto } from './project.dto'
 import { Project } from './project.schema'
 import { insensitiveRegExp } from './utils/escape_string'
+import { User } from 'src/user/user.schema'
 
 @Injectable()
 export class ProjectService {
@@ -104,47 +105,48 @@ export class ProjectService {
         else throw new HttpException('Project not found', HttpStatus.NOT_FOUND)
     }
 
-    async updateParticipantRole(
+    async updateUserRoles(
+        requestorId: string,
         projectId: string,
-        participantDto: UpdateParticipantDto
+        req: UpdateUserRolesDto
     ) {
         const project = await this.projectModel.findById(projectId)
         if (!project) {
             throw new HttpException('Project not found', HttpStatus.NOT_FOUND)
         }
 
-        const participant = project.participants.find(
-            (participant) => participant.user.email == participantDto.userEmail
+        const isCoordinator = project.coordinators.find(
+            (c) => c._id.toString() == requestorId
         )
-        if (participant) {
-            const sphereToUpdate = participant.spheres.find(
-                (s) => s.id == participantDto.sphere.id
-            )
-            if (sphereToUpdate) {
-                sphereToUpdate.permission = participantDto.sphere.permission
-            }
-        } else {
+        const isAdmin = await this.userService.isAdmin(requestorId)
+        if (!isAdmin && !isCoordinator) {
+            throw new HttpException('Unauthorized', HttpStatus.FORBIDDEN)
+        }
+
+        const participants = req.users
+            .filter((u) => u.role === 'participant')
+            .map((u) => toParticipant(u))
+        const coordinators = req.users
+            .filter((u) => u.role === 'coordinator')
+            .map((u) => {
+                const user = new User()
+                user._id = new mongoose.mongo.ObjectId(u.userId)
+                return user
+            })
+        if (
+            participants.length + coordinators.length !=
+            project.coordinators.length + project.participants.length
+        ) {
             throw new HttpException(
-                'User is not in project',
+                'Wrong amount of users',
                 HttpStatus.BAD_REQUEST
             )
         }
-        return project.save()
-    }
 
-    async updateCoordinatorRole(projectId: string, userEmail: string) {
-        const project = await this.projectModel.findById(projectId)
+        project.participants = participants
+        project.coordinators = coordinators
 
-        if (project) {
-            const user = project.coordinators.find(
-                (coordinator) => coordinator.email == userEmail
-            )
-            if (user) {
-                project.coordinators.push(user) // TODO this is wrong
-            }
-        }
-
-        return project.save()
+        project.save()
     }
 
     async addUserToProject(

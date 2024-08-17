@@ -3,6 +3,8 @@ import {
     Controller,
     Delete,
     Get,
+    HttpException,
+    HttpStatus,
     Param,
     Post,
     Put,
@@ -25,9 +27,10 @@ import {
     ShareProjectDto,
     ShareProjectEmailDto,
     StopSharingProjectEmailDto,
-    UpdateParticipantDto,
+    UpdateUserRolesDto,
 } from './project.dto'
 import { ProjectService } from './project.service'
+import { isValidSphereType } from './sphere.schema'
 
 @UseGuards(AuthGuard('jwt'))
 @ApiTags('projects')
@@ -190,28 +193,47 @@ export class ProjectController {
         }
     }
 
-    @Put(':id/update-participant-role')
-    async updateParticipantRole(
+    @Put(':id/roles')
+    async updateUserRoles(
+        @Req() header: { user: { id: string } },
         @Param('id') projectId: string,
-        @Body() projectDTO: UpdateParticipantDto
+        @Body() req: UpdateUserRolesDto
     ) {
-        console.log('vengo por aca')
-        console.log({ projectDTO })
-        const project = await this.projectService.updateParticipantRole(
-            projectId,
-            projectDTO
-        )
-        return project
-    }
+        if (!req || !req.users) {
+            throw new HttpException(
+                'Missing users to update',
+                HttpStatus.BAD_REQUEST
+            )
+        }
+        req.users.forEach((v) => {
+            if (!v.role || !v.userId) {
+                throw new HttpException(
+                    'Invalid fields',
+                    HttpStatus.BAD_REQUEST
+                )
+            }
+            if (v.role != 'coordinator' && v.role != 'participant') {
+                throw new HttpException('Invalid role', HttpStatus.BAD_REQUEST)
+            }
+            if (v.role == 'participant' && !Array.isArray(v.spheres)) {
+                throw new HttpException(
+                    'Invalid fields',
+                    HttpStatus.BAD_REQUEST
+                )
+            }
 
-    @Put(':id/update-coordinator-role')
-    async updateCoordinatorRole(
-        @Param('id') projectId: string,
-        @Body() projectDTO: { userEmail: string }
-    ) {
-        const project = await this.projectService.updateCoordinatorRole(
+            v.spheres.forEach((s) => {
+                if (!s.id || !s.permission || !isValidSphereType(s.id))
+                    throw new HttpException(
+                        'Invalid fields',
+                        HttpStatus.BAD_REQUEST
+                    )
+            })
+        })
+        const project = await this.projectService.updateUserRoles(
+            header.user.id,
             projectId,
-            projectDTO.userEmail
+            req
         )
         return project
     }
