@@ -116,12 +116,17 @@ export class ProjectService {
                     participant.user.email == participantDto.userEmail
             )
             if (participant) {
-                participant.sphere = participantDto.sphere
+                const sphereToUpdate = participant.spheres.find(
+                    (s) => s.id == participantDto.sphere.id
+                )
+                if (sphereToUpdate) {
+                    sphereToUpdate.permission = participantDto.sphere.permission
+                }
             } else {
-                project.participants.push({
-                    user: participant.user, // this is wrong TODO
-                    sphere: participantDto.sphere,
-                })
+                throw new HttpException(
+                    'User is not in project',
+                    HttpStatus.BAD_REQUEST
+                )
             }
         }
 
@@ -135,8 +140,8 @@ export class ProjectService {
             const user = project.coordinators.find(
                 (coordinator) => coordinator.email == userEmail
             )
-            if (!user) {
-                project.coordinators.push(user) // TODO fix
+            if (user) {
+                project.coordinators.push(user) // TODO this is wrong
             }
         }
 
@@ -169,7 +174,7 @@ export class ProjectService {
         }
 
         if (
-            project.participants.some((p) => p.userEmail == userEmail) ||
+            project.participants.some((p) => p.user.email == userEmail) ||
             project.coordinators.some((c) => c.email == userEmail)
         ) {
             throw new HttpException(
@@ -178,12 +183,17 @@ export class ProjectService {
             )
         }
 
+        const existingUser = await this.userService.findByEmail(userEmail)
+
         switch (role) {
             case 'participant':
-                project.participants.push({ userEmail, spheres: [] })
+                project.participants.push({
+                    user: existingUser,
+                    spheres: [],
+                })
                 break
             case 'coordinator':
-                project.coordinators.push({ email: userEmail })
+                project.coordinators.push(existingUser)
                 break
         }
         project.save()
