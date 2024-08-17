@@ -22,7 +22,7 @@ export class Project {
     @Prop({ type: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }] })
     coordinators: User[]
 
-    @Prop({ type: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }] })
+    @Prop({ type: [Object] })
     participants: Participant[]
 
     constructor(name: string, description: string, color: string) {

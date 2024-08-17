@@ -109,27 +109,26 @@ export class ProjectService {
         participantDto: UpdateParticipantDto
     ) {
         const project = await this.projectModel.findById(projectId)
-
-        if (project) {
-            const participant = project.participants.find(
-                (participant) =>
-                    participant.user.email == participantDto.userEmail
-            )
-            if (participant) {
-                const sphereToUpdate = participant.spheres.find(
-                    (s) => s.id == participantDto.sphere.id
-                )
-                if (sphereToUpdate) {
-                    sphereToUpdate.permission = participantDto.sphere.permission
-                }
-            } else {
-                throw new HttpException(
-                    'User is not in project',
-                    HttpStatus.BAD_REQUEST
-                )
-            }
+        if (!project) {
+            throw new HttpException('Project not found', HttpStatus.NOT_FOUND)
         }
 
+        const participant = project.participants.find(
+            (participant) => participant.user.email == participantDto.userEmail
+        )
+        if (participant) {
+            const sphereToUpdate = participant.spheres.find(
+                (s) => s.id == participantDto.sphere.id
+            )
+            if (sphereToUpdate) {
+                sphereToUpdate.permission = participantDto.sphere.permission
+            }
+        } else {
+            throw new HttpException(
+                'User is not in project',
+                HttpStatus.BAD_REQUEST
+            )
+        }
         return project.save()
     }
 
