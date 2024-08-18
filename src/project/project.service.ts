@@ -103,7 +103,6 @@ export class ProjectService {
         projectId: string,
         req: UpdateUserRolesDto
     ) {
-        mongoose.set('debug', true)
         const project = await this.projectModel.findById(projectId)
         if (!project) {
             throw new HttpException('Project not found', HttpStatus.NOT_FOUND)
