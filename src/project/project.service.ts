@@ -19,7 +19,7 @@ export class ProjectService {
         const project = await this.projectModel
             .findById(id)
             .populate({
-                path: 'coordinators._id',
+                path: 'coordinators',
                 model: 'User',
                 select: '-password',
             })

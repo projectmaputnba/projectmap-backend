@@ -19,7 +19,7 @@ export class Project {
     @Prop({ type: String, require: true })
     color: string
 
-    @Prop({ type: [Object] })
+    @Prop({ type: [String] })
     coordinators: User[]
 
     @Prop({ type: [Object] })
