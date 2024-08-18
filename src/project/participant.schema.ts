@@ -3,7 +3,7 @@ import { User } from 'src/user/user.schema'
 import { Sphere } from './sphere.schema'
 import mongoose from 'mongoose'
 
-@Schema()
+@Schema({ _id: false })
 export class Participant {
     @Prop({ type: mongoose.Schema.Types.ObjectId, ref: 'User' })
     user: User
