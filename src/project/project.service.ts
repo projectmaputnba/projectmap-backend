@@ -18,7 +18,11 @@ export class ProjectService {
     async getOne(id: string) {
         const project = await this.projectModel
             .findById(id)
-            .populate('coordinators', '-password')
+            .populate({
+                path: 'coordinators._id',
+                model: 'User',
+                select: '-password',
+            })
             .populate({
                 path: 'participants.user',
                 model: 'User',
