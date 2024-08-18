@@ -16,19 +16,7 @@ export class ProjectService {
     ) {}
 
     async getOne(id: string) {
-        const project = await this.projectModel
-            .findById(id)
-            .populate({
-                path: 'coordinators',
-                model: 'User',
-                select: '-password',
-            })
-            .populate({
-                path: 'participants.user',
-                model: 'User',
-                select: '-password',
-            })
-            .exec()
+        const project = await this.getPopulatedProject(id)
         return project
     }
 
@@ -115,7 +103,7 @@ export class ProjectService {
         projectId: string,
         req: UpdateUserRolesDto
     ) {
-        const project = await this.projectModel.findById(projectId)
+        const project = await this.getPopulatedProject(projectId)
         if (!project) {
             throw new HttpException('Project not found', HttpStatus.NOT_FOUND)
         }
@@ -207,5 +195,20 @@ export class ProjectService {
 
     private isValidRole(role: string) {
         return role == 'participant' || role == 'coordinator'
+    }
+
+    private async getPopulatedProject(projectId: string) {
+        return this.projectModel
+            .findById(projectId)
+            .populate({
+                path: 'coordinators',
+                model: 'User',
+                select: '-password',
+            })
+            .populate({
+                path: 'participants.user',
+                model: 'User',
+                select: '-password',
+            })
     }
 }

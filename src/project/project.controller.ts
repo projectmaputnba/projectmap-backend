@@ -30,7 +30,7 @@ import {
     UpdateUserRolesDto,
 } from './project.dto'
 import { ProjectService } from './project.service'
-import { isValidSphereType } from './sphere.schema'
+import { isValidPermission, isValidSphereType } from './sphere.schema'
 
 @UseGuards(AuthGuard('jwt'))
 @ApiTags('projects')
@@ -223,7 +223,12 @@ export class ProjectController {
             }
 
             v.spheres.forEach((s) => {
-                if (!s.id || !s.permission || !isValidSphereType(s.id))
+                if (
+                    !s.id ||
+                    !s.permission ||
+                    !isValidSphereType(s.id) ||
+                    !isValidPermission(s.permission)
+                )
                     throw new HttpException(
                         'Invalid fields',
                         HttpStatus.BAD_REQUEST
