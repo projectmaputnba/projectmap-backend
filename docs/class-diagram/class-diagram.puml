@@ -196,25 +196,26 @@ class AnsoffService {
     + delete(id: String): Promise<String>
 }
 
-enum Estrategia {
-    PENETRACION 
-    DIVERSIFICACION
-    DESARROLLO_DE_PRODUCTO
-    DESARROLLO_DE_MERCADO
-}
-enum Exito {
-    INDEFINIDO
-    POCO_EXITOSO
-    MUY_EXITOSO
-}
-enum SituacionDelMercado {
-    MERCADO_EXISTENTE
-    NUEVO
-}
-enum SituacionDelProducto {
-    PRODUCTO_EXISTENTE
-    NUEVO
-}
+' enum Estrategia {
+'     PENETRACION 
+'     DIVERSIFICACION
+'     DESARROLLO_DE_PRODUCTO
+'     DESARROLLO_DE_MERCADO
+' }
+' enum Exito {
+'     INDEFINIDO
+'     POCO_EXITOSO
+'     MUY_EXITOSO
+' }
+' enum SituacionDelMercado {
+'     MERCADO_EXISTENTE
+'     NUEVO
+' }
+' enum SituacionDelProducto {
+'     PRODUCTO_EXISTENTE
+'     NUEVO
+' }
+
 class BalancedScorecardController {
     - balancedScorecardService: BalancedScorecardService
 
@@ -329,12 +330,12 @@ class BalancedScorecardService {
     + removeCheckpoint(balancedScorecardId: string, objectiveId: string, checkpointId: string): Promise<BalancedScorecard>
     + getOptions(): { trend: Trend[], deviation: Deviation[], area: Area[] }
 }
-enum Area {
-    Financiera
-    Clientes
-    ProcesosInternos
-    Aprendizaje
-}
+' enum Area {
+'     Financiera
+'     Clientes
+'     ProcesosInternos
+'     Aprendizaje
+' }
 class ContinuousImprovementController {
     - fodaService: FodaService
     - pestelService: PestelService
@@ -418,17 +419,17 @@ class FodaService {
     + deleteFactor(id: string, idFactor: string): Promise<Foda>
     + updateFactor(id: string, idFactor: string, updatedFactor: FactorDto): Promise<Foda>
 }
-enum Cuadrantes {
-    DOBLE_O_NADA
-    DESARROLLAR
-    REFORZAR
-    REPLANTEAR
-    REORGANIZAR
-    MANTENER
-    ABANDONAR
-    SALIR_CON_ORDEN
-    COSECHAR
-}
+' enum Cuadrantes {
+'     DOBLE_O_NADA
+'     DESARROLLAR
+'     REFORZAR
+'     REPLANTEAR
+'     REORGANIZAR
+'     MANTENER
+'     ABANDONAR
+'     SALIR_CON_ORDEN
+'     COSECHAR
+' }
 class MckinseyController {
     - mckinseyService: MckinseyService
 
@@ -607,38 +608,38 @@ class OkrService {
     + removeKeyStatus(okrProjectId: string, okrId: string, keyResultId: string, keyStatusId: string): Promise<OkrProject>
     + delete(id: string): Promise<string>
 }
-enum Area {
-    POLITICO 
-    ECONOMICO
-    SOCIAL 
-    TECNOLOGICO
-    AMBIENTAL
-    LEGAL
-}
+' enum Area {
+'     POLITICO 
+'     ECONOMICO
+'     SOCIAL 
+'     TECNOLOGICO
+'     AMBIENTAL
+'     LEGAL
+' }
 
-enum Importancia {
-    'Muy importante'
-    'Importante' 
-    'Indiferente'
-    'Poco importante'
-    'Sin importancia'
-}
+' enum Importancia {
+'     'Muy importante'
+'     'Importante' 
+'     'Indiferente'
+'     'Poco importante'
+'     'Sin importancia'
+' }
 
-enum Intensidad {
-    'Muy fuerte'
-    'Fuerte'
-    'Promedio'
-    'Debil' 
-    'Muy debil' 
-}
+' enum Intensidad {
+'     'Muy fuerte'
+'     'Fuerte'
+'     'Promedio'
+'     'Debil' 
+'     'Muy debil' 
+' }
 
-enum Tendencia {
-    'Mejora mucho'
-    'Mejora' 
-    'Se mantiene' 
-    'Empeora' 
-    'Empeora Mucho'
-}
+' enum Tendencia {
+'     'Mejora mucho'
+'     'Mejora' 
+'     'Se mantiene' 
+'     'Empeora' 
+'     'Empeora Mucho'
+' }
 class PestelController {
     + constructor(pestelService: PestelService)
     + getAll(): Promise<Pestel[]>
@@ -704,20 +705,20 @@ class PestelService {
     + deleteFactor(id: string, idFactor: string): Promise<Pestel>
     + getOptions(): Promise<{ area: Area[], importancia: Importancia[], intensidad: Intensidad[], tendencia: Tendencia[] }>
 }
-enum Fuerza {
-    RIVALIDAD_ENTRE_COMPETIDORES 
-    PODER_DE_NEGOCIACION_CON_LOS_CLIENTES
-    PODER_DE_NEGOCIACION_CON_LOS_PROVEEDORES 
-    AMENAZA_DE_NUEVOS_COMPETIDORES 
-    AMENAZA_DE_PRODUCTOS_SUBSTITUTOS 
-}
-enum NivelDeConcordancia {
-    CONCUERDO_TOTALMENTE 
-    CONCUERDO_EN_PARTE
-    NI_DE_ACUERDO_NI_EN_DESACUERDO 
-    DE_ACUERDO_EN_PARTE 
-    DE_ACUERDO_TOTALMENTE
-}
+' enum Fuerza {
+'     RIVALIDAD_ENTRE_COMPETIDORES 
+'     PODER_DE_NEGOCIACION_CON_LOS_CLIENTES
+'     PODER_DE_NEGOCIACION_CON_LOS_PROVEEDORES 
+'     AMENAZA_DE_NUEVOS_COMPETIDORES 
+'     AMENAZA_DE_PRODUCTOS_SUBSTITUTOS 
+' }
+' enum NivelDeConcordancia {
+'     CONCUERDO_TOTALMENTE 
+'     CONCUERDO_EN_PARTE
+'     NI_DE_ACUERDO_NI_EN_DESACUERDO 
+'     DE_ACUERDO_EN_PARTE 
+'     DE_ACUERDO_TOTALMENTE
+' }
 class PorterController {
     -porterService: PorterService
 
