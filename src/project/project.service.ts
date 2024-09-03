@@ -153,7 +153,7 @@ export class ProjectService {
     ): Promise<Stage> {
         const user = await this.userService.findByEmail(userEmail)
         const canEdit = new Stage(
-            // StageType can be anything here
+            // StageType can be anything here since we are checking only for the permission
             StageType.CompetitiveStrategy,
             Permission.Edit
         )
