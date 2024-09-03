@@ -4,7 +4,7 @@ import mongoose, { Model } from 'mongoose'
 import { UserService } from '../user/user.service'
 import { ProjectDto, toParticipant, UpdateUserRolesDto } from './project.dto'
 import { Project } from './project.schema'
-import { defaultStages, Stage } from './stage.schema'
+import { defaultStages, Permission, Stage, StageType } from './stage.schema'
 import { insensitiveRegExp } from './utils/escape_string'
 import { User } from 'src/user/user.schema'
 
@@ -151,6 +151,18 @@ export class ProjectService {
         userEmail: string,
         stageId: string
     ): Promise<Stage> {
+        const user = await this.userService.findByEmail(userEmail)
+        const canEdit = new Stage(
+            // StageType can be anything here
+            StageType.CompetitiveStrategy,
+            Permission.Edit
+        )
+        if (!user) {
+            return null
+        }
+        if (user.isAdmin) {
+            return canEdit
+        }
         const project = await this.getOne(projectId)
         let stage = null
 
@@ -161,6 +173,12 @@ export class ProjectService {
 
             if (matchedUser) {
                 stage = matchedUser.stages.find((stage) => stage.id == stageId)
+            }
+            const isCoordinator = project.coordinators.some(
+                (c) => c.email == userEmail
+            )
+            if (isCoordinator) {
+                return canEdit
             }
         }
 
