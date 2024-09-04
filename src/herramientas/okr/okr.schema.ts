@@ -169,7 +169,7 @@ export function getStatusFromFrequencyAndHorizon(
         }
     }
     const validFrequency = validFrequencies.filter((f) => f == frequency)
-    if (!validFrequency) {
+    if (!validFrequency || validFrequency.length == 0) {
         return {
             invalid: true,
         }
