@@ -71,6 +71,9 @@ export class KeyResult {
     @Prop({ type: [KeyStatusSchema], default: [] })
     keyStatus: KeyStatus[]
 
+    @Prop({ type: Number, required: false })
+    currentScore: number
+
     constructor(
         description: string,
         responsible: string,
@@ -91,9 +94,13 @@ export class KeyResult {
 }
 export const KeyResultSchema = SchemaFactory.createForClass(KeyResult)
 KeyResultSchema.pre('save', function (next) {
-    this.progress =
+    this.progress = Math.round(
         (this.keyStatus.map((k) => k.value).reduce((a, b) => a + b) * 100) /
-        this.goal
+            this.goal
+    )
+    this.currentScore = this.keyStatus
+        .map((k) => k.value)
+        .reduce((a, b) => a + b, 0)
     next()
 })
 
@@ -142,10 +149,11 @@ OkrSchema.pre('save', function (next) {
                 .map((kr) => kr.priority)
                 .reduce((a, b) => a + b, 0) / this.keyResults.length
         )
-        this.progress =
+        this.progress = Math.round(
             this.keyResults
                 .map((kr) => kr.progress)
                 .reduce((a, b) => a + b, 0) / this.keyResults.length
+        )
     }
     next()
 })
