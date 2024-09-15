@@ -1,10 +1,13 @@
+import { Frequency } from '../frequency'
+import { Horizon } from '../horizon'
+import { BSCCategory } from './bsc_category'
 import { Trend } from './trends'
-import { Area } from './perspectives'
 
 export class CheckpointDto {
     _id: string
-    month: string
+    period: string
     target: number
+    // actually it should be called 'current', no pun intended
     actual: number
 }
 
@@ -12,25 +15,21 @@ export class ObjectiveDto {
     _id: string
     action: string
     measure: string
-    target: number
-    area: string
+    goal: number
+    baseline: number
+    category: BSCCategory
     checkpoints: CheckpointDto[]
     progress: number
     trend: Trend
     responsible: string
-}
-
-export class InitiativeDto {
-    _id: string
-    area: Area
-    description: string
+    frequency: Frequency
 }
 
 export class BalancedScorecardDto {
     _id: string
     projectId: string
-    titulo: string
+    description: string
     createdAt: Date
     objectives: ObjectiveDto[]
-    initiatives: InitiativeDto[]
+    horizon: Horizon
 }

@@ -13,7 +13,6 @@ import { ApiTags } from '@nestjs/swagger'
 import {
     BalancedScorecardDto,
     CheckpointDto,
-    InitiativeDto,
     ObjectiveDto,
 } from './balancedScorecard.dto'
 import { BalancedScorecardService } from './balancedScorecard.service'
@@ -39,12 +38,20 @@ export class BalancedScorecardController {
         return this.balancedScorecardService.findById(id)
     }
 
-    @Post(':id/initiatives')
-    async addInitiative(
+    @Put(':id')
+    async editBalancedScorecard(
         @Param('id') id: string,
-        @Body() initiativeDto: InitiativeDto
+        @Body() balancedScoreCardDto: BalancedScorecardDto
     ) {
-        return this.balancedScorecardService.addInitiative(id, initiativeDto)
+        return this.balancedScorecardService.edit(id, balancedScoreCardDto)
+    }
+
+    @Delete(':id')
+    async delete(@Param('id') id: string) {
+        const documentId = await this.balancedScorecardService.delete(id)
+        return {
+            _id: documentId,
+        }
     }
 
     @Post(':id/objectives')
@@ -55,25 +62,17 @@ export class BalancedScorecardController {
         return this.balancedScorecardService.addObjective(id, objectiveDto)
     }
 
-    @Post(':id/objectives/:objectiveId/checkpoints')
-    async addCheckpoint(
+    @Put(':id/objectives/:objectiveId')
+    async editObjective(
         @Param('id') id: string,
         @Param('objectiveId') objectiveId: string,
-        @Body() checkpointDto: CheckpointDto
+        @Body() objectiveDto: ObjectiveDto
     ) {
-        return this.balancedScorecardService.addCheckpoint(
+        return this.balancedScorecardService.editObjective(
             id,
             objectiveId,
-            checkpointDto
+            objectiveDto
         )
-    }
-
-    @Delete(':id/initiatives/:initiativeId')
-    async removeInitiative(
-        @Param('id') id: string,
-        @Param('initiativeId') initiativeId: string
-    ) {
-        return this.balancedScorecardService.removeInitiative(id, initiativeId)
     }
 
     @Delete(':id/objectives/:objectiveId')
@@ -97,40 +96,7 @@ export class BalancedScorecardController {
         )
     }
 
-    @Put(':id')
-    async editBalancedScorecard(
-        @Param('id') id: string,
-        @Body() balancedScoreCardDto: BalancedScorecardDto
-    ) {
-        return this.balancedScorecardService.edit(id, balancedScoreCardDto)
-    }
-
-    @Put(':id/initiatives/:initiativeId')
-    async editInitiative(
-        @Param('id') id: string,
-        @Param('initiativeId') initiativeId: string,
-        @Body() initiativeDto: InitiativeDto
-    ) {
-        return this.balancedScorecardService.editInitiative(
-            id,
-            initiativeId,
-            initiativeDto
-        )
-    }
-
-    @Put(':id/objectives/:objectiveId')
-    async editObjective(
-        @Param('id') id: string,
-        @Param('objectiveId') objectiveId: string,
-        @Body() objectiveDto: ObjectiveDto
-    ) {
-        return this.balancedScorecardService.editObjective(
-            id,
-            objectiveId,
-            objectiveDto
-        )
-    }
-
+    // TODO: either remove this and update all from objective, or don´t update checkpoints in "edit objective"
     @Put(':id/objectives/:objectiveId/checkpoints/:checkpointId')
     async editCheckpoint(
         @Param('id') id: string,
@@ -144,13 +110,5 @@ export class BalancedScorecardController {
             checkpointId,
             checkpointDto
         )
-    }
-
-    @Delete(':id')
-    async delete(@Param('id') id: string) {
-        const documentId = await this.balancedScorecardService.delete(id)
-        return {
-            _id: documentId,
-        }
     }
 }

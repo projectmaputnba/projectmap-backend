@@ -1,38 +1,37 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common'
 import { InjectModel } from '@nestjs/mongoose'
-import {
-    BalancedScorecard,
-    BalancedScoreCardDocument,
-    Checkpoint,
-    Initiative,
-    Objective,
-} from './balancedScorecard.schema'
 import { Model } from 'mongoose'
 import {
     BalancedScorecardDto,
     CheckpointDto,
-    InitiativeDto,
     ObjectiveDto,
 } from './balancedScorecard.dto'
-import { Area } from './perspectives'
-import { Trend } from './trends'
-import { CheckpointMonths } from './checkpointMonths'
+import {
+    BalancedScorecard,
+    Checkpoint,
+    Objective,
+} from './balancedScorecard.schema'
 import { Deviation } from './deviations'
+import { BSCCategory } from './bsc_category'
+import { Trend } from './trends'
+import { getStatusFromFrequencyAndHorizon } from '../frequency'
+import { Horizon } from '../horizon'
 
 @Injectable()
 export class BalancedScorecardService {
     constructor(
         @InjectModel(BalancedScorecard.name)
-        private balancedScorecardModel: Model<BalancedScoreCardDocument>
+        private balancedScorecardModel: Model<BalancedScorecard>
     ) {}
 
     async create(balancedScorecardDto: BalancedScorecardDto) {
+        if (balancedScorecardDto.horizon < Horizon.YEAR) {
+            throw new HttpException('Invalid horizon', HttpStatus.BAD_REQUEST)
+        }
         const balancedScorecard = new this.balancedScorecardModel(
             balancedScorecardDto
         )
         if (!balancedScorecardDto.objectives) balancedScorecard.objectives = []
-        if (!balancedScorecardDto.initiatives)
-            balancedScorecard.initiatives = []
 
         return balancedScorecard.save()
     }
@@ -73,47 +72,7 @@ export class BalancedScorecardService {
     ) {
         const balancedScorecard: BalancedScorecard =
             await this.balancedScorecardModel.findById(balancedScorecardId)
-        balancedScorecard.titulo = balancedScorecardDto.titulo
-        return new this.balancedScorecardModel(balancedScorecard).save()
-    }
-
-    async addInitiative(
-        balancedScorecardId: string,
-        initiativeDto: InitiativeDto
-    ) {
-        const balancedScorecard: BalancedScorecard =
-            await this.balancedScorecardModel.findById(balancedScorecardId)
-        const initiative = new Initiative(
-            initiativeDto.area as Area,
-            initiativeDto.description
-        )
-        balancedScorecard.initiatives.push(initiative)
-        return new this.balancedScorecardModel(balancedScorecard).save()
-    }
-
-    async removeInitiative(balancedScorecardId: string, initiativeId: string) {
-        const balancedScorecard: BalancedScorecard =
-            await this.balancedScorecardModel.findById(balancedScorecardId)
-        balancedScorecard.initiatives = balancedScorecard.initiatives.filter(
-            (initiative) => initiative._id.toString() != initiativeId
-        )
-
-        return new this.balancedScorecardModel(balancedScorecard).save()
-    }
-
-    async editInitiative(
-        balancedScorecardId: string,
-        initiativeId: string,
-        initiativeDto: InitiativeDto
-    ) {
-        const balancedScorecard: BalancedScorecard =
-            await this.balancedScorecardModel.findById(balancedScorecardId)
-        balancedScorecard.initiatives.forEach((initiative) => {
-            if (initiative._id.toString() == initiativeId) {
-                initiative.area = initiativeDto.area as Area
-                initiative.description = initiativeDto.description
-            }
-        })
+        balancedScorecard.description = balancedScorecardDto.description
         return new this.balancedScorecardModel(balancedScorecard).save()
     }
 
@@ -126,17 +85,41 @@ export class BalancedScorecardService {
         const objective = new Objective(
             objectiveDto.action,
             objectiveDto.measure,
-            objectiveDto.target,
-            objectiveDto.area as Area,
-            objectiveDto.responsible
+            objectiveDto.goal,
+            objectiveDto.baseline,
+            objectiveDto.category as BSCCategory,
+            objectiveDto.responsible,
+            objectiveDto.frequency
         )
 
+        const periodCount = getStatusFromFrequencyAndHorizon(
+            objectiveDto.frequency,
+            balancedScorecard.horizon
+        )
+        if (periodCount.invalid) {
+            throw new HttpException(
+                'Invalid frequency or horizon',
+                HttpStatus.BAD_REQUEST
+            )
+        }
+        const defaultObjective =
+            Math.round(
+                ((objectiveDto.goal - objectiveDto.baseline) /
+                    periodCount.lengthOfPeriods) *
+                    100
+            ) / 100
+        let startingObjective = defaultObjective
         objective.checkpoints = []
-        const targetPerMonth = objective.target / CheckpointMonths.length
-        CheckpointMonths.forEach((month) => {
-            const checkpoint = new Checkpoint(month, targetPerMonth, 0)
-            objective.checkpoints.push(checkpoint)
-        })
+        for (let i = 0; i < periodCount.lengthOfPeriods; i++) {
+            objective.checkpoints.push(
+                new Checkpoint(
+                    periodCount.periodName + ' ' + (i + 1),
+                    startingObjective,
+                    0
+                )
+            )
+            startingObjective += defaultObjective
+        }
 
         balancedScorecard.objectives.push(objective)
 
@@ -155,21 +138,40 @@ export class BalancedScorecardService {
             if (objective._id.toString() == objectiveId) {
                 objective.action = objectiveDto.action
                 objective.measure = objectiveDto.measure
-                objective.target = objectiveDto.target
-                objective.area = objectiveDto.area as Area
+                objective.goal = objectiveDto.goal
+                objective.baseline = objectiveDto.baseline
+                objective.category = objectiveDto.category as BSCCategory
 
-                objectiveDto.checkpoints.forEach((checkpointDto) => {
-                    const objectiveToUpdate = objective.checkpoints.find(
-                        (checkpoint) =>
-                            checkpoint._id.toString() ==
-                            checkpointDto._id.toString()
-                    )
-                    if (objectiveToUpdate) {
-                        objectiveToUpdate.actual = checkpointDto.actual
-                        objectiveToUpdate.month = checkpointDto.month
-                        objectiveToUpdate.target = checkpointDto.target
-                    }
-                })
+                if (objectiveDto.checkpoints) {
+                    objectiveDto.checkpoints.forEach((checkpointDto) => {
+                        const objectiveToUpdate = objective.checkpoints.find(
+                            (checkpoint) =>
+                                checkpoint._id.toString() ==
+                                checkpointDto._id.toString()
+                        )
+                        if (objectiveToUpdate) {
+                            objectiveToUpdate.current = checkpointDto.actual
+                            objectiveToUpdate.period = checkpointDto.period
+                            objectiveToUpdate.target = checkpointDto.target
+                        }
+                    })
+                }
+            }
+        })
+        balancedScorecard.objectives.forEach((o) => {
+            let checkpointTotalTarget = 0
+            o.checkpoints.forEach((c) => {
+                checkpointTotalTarget += c.target
+            })
+            // math functions are to have some grace range because of decimals
+            if (
+                checkpointTotalTarget < Math.floor(o.goal) ||
+                checkpointTotalTarget > Math.ceil(o.goal)
+            ) {
+                throw new HttpException(
+                    "Sum of objectives don't match goal",
+                    HttpStatus.BAD_REQUEST
+                )
             }
         })
 
@@ -187,27 +189,6 @@ export class BalancedScorecardService {
         return new this.balancedScorecardModel(balancedScorecard).save()
     }
 
-    async addCheckpoint(
-        balancedScorecardId: string,
-        objectiveId: string,
-        checkpointDto: CheckpointDto
-    ) {
-        const balancedScorecard: BalancedScorecard =
-            await this.balancedScorecardModel.findById(balancedScorecardId)
-
-        const objective = balancedScorecard.objectives.find(
-            (o) => o._id.toString() == objectiveId
-        )
-        const checkpoint = new Checkpoint(
-            checkpointDto.month,
-            checkpointDto.target,
-            checkpointDto.actual
-        )
-
-        objective.checkpoints.push(checkpoint)
-        return new this.balancedScorecardModel(balancedScorecard).save()
-    }
-
     async editCheckpoint(
         balancedScorecardId: string,
         objectiveId: string,
@@ -221,10 +202,10 @@ export class BalancedScorecardService {
             (o) => o._id.toString() == objectiveId
         )
 
+        // TODO: check here the sum if this endpoint is used
         objective.checkpoints.forEach((checkpoint) => {
             if (checkpoint._id.toString() == checkpointId) {
-                checkpoint.actual = checkpointDto.actual
-                checkpoint.month = checkpointDto.month
+                checkpoint.current = checkpointDto.actual
                 checkpoint.target = checkpointDto.target
             }
         })
@@ -254,7 +235,7 @@ export class BalancedScorecardService {
         return {
             trend: Object.values(Trend),
             deviation: Object.values(Deviation),
-            area: Object.values(Area),
+            area: Object.values(BSCCategory),
         }
     }
 }

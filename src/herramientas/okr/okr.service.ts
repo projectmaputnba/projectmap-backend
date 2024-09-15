@@ -2,18 +2,18 @@ import { HttpException, HttpStatus, Injectable } from '@nestjs/common'
 import { InjectModel } from '@nestjs/mongoose'
 import { Model } from 'mongoose'
 import { KeyResultDto, OkrDto } from './okr.dto'
-import {
-    getStatusFromFrequencyAndHorizon,
-    KeyResult,
-    KeyStatus,
-    Okr,
-} from './okr.schema'
+import { KeyResult, KeyStatus, Okr } from './okr.schema'
+import { getStatusFromFrequencyAndHorizon } from '../frequency'
+import { Horizon } from '../horizon'
 
 @Injectable()
 export class OkrService {
     constructor(@InjectModel(Okr.name) private okrModel: Model<Okr>) {}
 
     async create(okrDto: OkrDto) {
+        if (okrDto.horizon > Horizon.YEAR) {
+            throw new HttpException('Invalid horizon', HttpStatus.BAD_REQUEST)
+        }
         const okr = new this.okrModel(okrDto)
         return okr.save()
     }

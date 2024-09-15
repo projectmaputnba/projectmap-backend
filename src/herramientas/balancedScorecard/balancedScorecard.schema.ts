@@ -1,29 +1,28 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose'
-import mongoose, { Document } from 'mongoose'
-import { Completition } from '../completition'
+import mongoose from 'mongoose'
 import { Deviation } from './deviations'
-import { Area } from './perspectives'
+import { BSCCategory as BSCCategory } from './bsc_category'
 import { Trend } from './trends'
-
-export type BalancedScoreCardDocument = BalancedScorecard & Document
+import { Horizon } from '../horizon'
+import { Frequency } from '../frequency'
 
 @Schema()
 export class Checkpoint {
     _id: mongoose.Types.ObjectId
 
     @Prop({ type: String, required: true })
-    month: string
+    period: string
 
     @Prop({ type: Number, required: true })
     target: number
 
     @Prop({ type: Number, required: false })
-    actual: number
+    current: number
 
-    constructor(month: string, target: number, actual: number) {
-        this.month = month
+    constructor(period: string, target: number, current: number) {
+        this.period = period
         this.target = target
-        this.actual = actual
+        this.current = current
     }
 }
 
@@ -33,45 +32,56 @@ export const checkPointSchema = SchemaFactory.createForClass(Checkpoint)
 export class Objective {
     _id: mongoose.Types.ObjectId
 
-    @Prop({ required: true })
+    // This would be the title of the objective
+    @Prop({ type: String, required: true })
     action: string
 
-    @Prop({ required: true })
+    @Prop({ type: String, required: false, default: '' })
     measure: string
 
-    @Prop({ type: String })
-    target: number
+    @Prop({ type: Number })
+    goal: number
 
-    @Prop({ type: String })
-    area: Area
+    @Prop({ type: Number })
+    baseline: number
 
-    @Prop({ type: [checkPointSchema] })
+    @Prop({ type: String, enum: BSCCategory, required: true })
+    category: BSCCategory
+
+    @Prop({ type: [checkPointSchema], default: [] })
     checkpoints: Checkpoint[]
 
     @Prop({ type: Number })
     progress: number
 
-    @Prop({ type: String })
+    @Prop({ type: String, enum: Trend })
     trend: Trend
 
-    @Prop({ type: String })
+    @Prop({ type: String, enum: Deviation })
     deviation: Deviation
 
     @Prop({ type: String, required: false })
     responsible: string
 
+    @Prop({ type: Number, enum: Frequency, required: true })
+    frequency: Frequency
+
     constructor(
         action: string,
         measure: string,
-        target: number,
-        area: Area,
-        responsible: string
+        goal: number,
+        baseline: number,
+        category: BSCCategory,
+        responsible: string,
+        frequency: Frequency
     ) {
         this.action = action
         this.measure = measure
-        this.target = target
-        this.area = area
+        this.goal = goal
+        this.baseline = baseline
+        this.category = category
         this.responsible = responsible
+        this.frequency = frequency
     }
 }
 
@@ -79,12 +89,12 @@ export const objectiveSchema = SchemaFactory.createForClass(Objective)
 objectiveSchema.pre('save', function (next) {
     if (this.checkpoints.length) {
         const completedCheckpoints = this.checkpoints.filter(
-            (checkpoint) => checkpoint.actual && checkpoint.actual != 0
+            (checkpoint) => checkpoint.current && checkpoint.current != 0
         )
         if (completedCheckpoints.length) {
             const historicProgress = completedCheckpoints
                 .slice(0, completedCheckpoints.length - 1)
-                .map((k) => (k.actual / k.target) * 100)
+                .map((k) => (k.current / k.target) * 100)
             const avgHistoricProgress =
                 historicProgress.reduce((a, b) => a + b, 0) /
                 historicProgress.length
@@ -92,21 +102,21 @@ objectiveSchema.pre('save', function (next) {
             const lastCheckpoint =
                 completedCheckpoints[completedCheckpoints.length - 1]
             const lastProgress =
-                (lastCheckpoint.actual / lastCheckpoint.target) * 100
+                (lastCheckpoint.current / lastCheckpoint.target) * 100
 
             if (lastProgress > avgHistoricProgress) this.trend = Trend.Upwards
             else if (lastProgress < avgHistoricProgress)
                 this.trend = Trend.Downwards
             else this.trend = Trend.Stable
 
-            const actual = this.checkpoints
-                .map((k) => k.actual)
+            const current = this.checkpoints
+                .map((k) => k.current)
                 .reduce((a, b) => a + b, 0)
-            this.progress = (actual / this.target) * 100
+            this.progress = (current / (this.goal - this.baseline)) * 100
 
             const progressFromCompletedCheckpoints =
                 completedCheckpoints
-                    .map((k) => (k.actual / k.target) * 100)
+                    .map((k) => (k.current / k.target) * 100)
                     .reduce((a, b) => a + b, 0) / completedCheckpoints.length
 
             if (progressFromCompletedCheckpoints > 95)
@@ -121,32 +131,14 @@ objectiveSchema.pre('save', function (next) {
 })
 
 @Schema()
-export class Initiative {
-    _id: mongoose.Types.ObjectId
-
-    @Prop({ type: String })
-    area: Area
-
-    @Prop({ type: String })
-    description: string
-
-    constructor(area: Area, description: string) {
-        this.area = area
-        this.description = description
-    }
-}
-
-export const initiativesSchema = SchemaFactory.createForClass(Initiative)
-
-@Schema()
 export class BalancedScorecard {
     _id: mongoose.Types.ObjectId
 
     @Prop({ required: true })
     projectId: string
 
-    @Prop({ type: String })
-    titulo: string
+    @Prop({ type: String, required: true })
+    description: string
 
     @Prop({ type: Date, default: Date.now })
     createdAt: Date
@@ -154,39 +146,13 @@ export class BalancedScorecard {
     @Prop([objectiveSchema])
     objectives: Objective[]
 
-    @Prop([initiativesSchema])
-    initiatives: Initiative[]
-
-    @Prop({ type: String, default: Completition.Vacio })
-    completion: Completition
+    @Prop({ type: Number, enum: Horizon, required: true })
+    horizon: Horizon
 }
 
 export const BalanceScorecardSchema =
     SchemaFactory.createForClass(BalancedScorecard)
 
 BalanceScorecardSchema.pre('save', function (next) {
-    const objectiveAprendizaje = this.objectives.find(
-        (objective) => objective.area == Area.Aprendizaje
-    )
-    const objectiveClientes = this.objectives.find(
-        (objective) => objective.area == Area.Clientes
-    )
-    const objectiveFinanciera = this.objectives.find(
-        (objective) => objective.area == Area.Financiera
-    )
-    const objectiveProcesosInternos = this.objectives.find(
-        (objective) => objective.area == Area.ProcesosInternos
-    )
-
-    if (
-        objectiveAprendizaje &&
-        objectiveClientes &&
-        objectiveFinanciera &&
-        objectiveProcesosInternos
-    )
-        this.completion = Completition.Completo
-    else if (this.objectives.length == 0) this.completion = Completition.Vacio
-    else this.completion = Completition.Incompleto
-
     next()
 })
