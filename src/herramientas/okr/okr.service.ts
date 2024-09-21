@@ -3,7 +3,7 @@ import { InjectModel } from '@nestjs/mongoose'
 import { Model } from 'mongoose'
 import { KeyResultDto, OkrDto } from './okr.dto'
 import { KeyResult, KeyStatus, Okr } from './okr.schema'
-import { Frequency, getStatusFromFrequencyAndHorizon } from '../frequency'
+import { getStatusFromFrequencyAndHorizon } from '../frequency'
 import { Horizon } from '../horizon'
 import { addDateByFrequency, dateToString } from './dates'
 
