@@ -57,11 +57,7 @@ export class OkrService {
                 okr.startingDate,
                 keyResultDto.frequency * i
             )
-            const stringDate = [
-                newDate.getUTCDate(),
-                newDate.getUTCMonth() + 1,
-                newDate.getUTCFullYear(),
-            ].join('/')
+            const stringDate = dateToString(newDate)
             keyStatus.push(new KeyStatus(stringDate, 0))
         }
 
@@ -142,4 +138,12 @@ function addDays(date: Date, days: number): Date {
     const result = new Date(date)
     result.setDate(result.getDate() + days)
     return result
+}
+
+function dateToString(date: Date): string {
+    return new Intl.DateTimeFormat('es-ES', {
+        day: '2-digit',
+        month: '2-digit',
+        year: 'numeric',
+    }).format(date)
 }
