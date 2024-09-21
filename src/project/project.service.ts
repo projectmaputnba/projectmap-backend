@@ -213,7 +213,7 @@ export class ProjectService {
             throw new HttpException('Rol invalido', HttpStatus.BAD_REQUEST)
         }
 
-        const project = await this.projectModel.findById(projectId)
+        const project = await this.getPopulatedProject(projectId)
         if (!project) {
             throw new HttpException(
                 'Proyecto no encontrado',
