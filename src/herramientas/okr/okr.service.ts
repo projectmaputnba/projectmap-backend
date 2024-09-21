@@ -3,8 +3,9 @@ import { InjectModel } from '@nestjs/mongoose'
 import { Model } from 'mongoose'
 import { KeyResultDto, OkrDto } from './okr.dto'
 import { KeyResult, KeyStatus, Okr } from './okr.schema'
-import { getStatusFromFrequencyAndHorizon } from '../frequency'
+import { Frequency, getStatusFromFrequencyAndHorizon } from '../frequency'
 import { Horizon } from '../horizon'
+import { addDateByFrequency, dateToString } from './dates'
 
 @Injectable()
 export class OkrService {
@@ -53,9 +54,10 @@ export class OkrService {
         }
         const keyStatus: KeyStatus[] = []
         for (let i = 0; i < keyStatusData.lengthOfPeriods; i++) {
-            const newDate = addDays(
+            const newDate = addDateByFrequency(
                 okr.startingDate,
-                keyResultDto.frequency * i
+                keyResultDto.frequency,
+                i
             )
             const stringDate = dateToString(newDate)
             keyStatus.push(new KeyStatus(stringDate, 0))
@@ -132,18 +134,4 @@ export class OkrService {
             throw new HttpException('Okr not found', HttpStatus.NOT_FOUND)
         }
     }
-}
-
-function addDays(date: Date, days: number): Date {
-    const result = new Date(date)
-    result.setDate(result.getDate() + days)
-    return result
-}
-
-function dateToString(date: Date): string {
-    return new Intl.DateTimeFormat('es-ES', {
-        day: '2-digit',
-        month: '2-digit',
-        year: 'numeric',
-    }).format(date)
 }
