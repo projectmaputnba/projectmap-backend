@@ -8,13 +8,6 @@ cd projectMap-Backend
 npm install
 ```
 
-Required env vars:
-
-- MONGO_URI
-- SECRET_KEY
-- SENDGRID_API_KEY (only to have Sendgrid integration)
-- PORT
-
 ## Running the app
 
 ```bash
@@ -28,7 +21,7 @@ npm run start:dev
 npm run start:prod
 ```
 
-## Test
+## Tests
 
 ```bash
 # unit tests
