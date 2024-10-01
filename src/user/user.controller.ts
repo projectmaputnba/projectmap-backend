@@ -1,7 +1,18 @@
-import { Body, Controller, Get, Param, Post, Put, Query } from '@nestjs/common'
+import {
+    Body,
+    Controller,
+    Get,
+    Param,
+    Post,
+    Put,
+    Query,
+    Req,
+    UseGuards,
+} from '@nestjs/common'
 import { ApiTags } from '@nestjs/swagger'
 import { UserService } from './user.service'
 import { UpdateUserDto } from './user.dto'
+import { AuthGuard } from '@nestjs/passport'
 
 @ApiTags('users')
 @Controller('users')
@@ -34,5 +45,14 @@ export class UserController {
     @Post('user/password/code')
     async verifyPasswordRecoveryCode(@Body() body: { code: number }) {
         return this.userService.verifyPasswordRecoveryCode(body.code)
+    }
+
+    @Post('user/password')
+    @UseGuards(AuthGuard('jwt'))
+    async updatePassword(
+        @Body() body: { newPassword: string },
+        @Req() req: { user: { id: string } }
+    ) {
+        return this.userService.updatePassword(req.user.id, body.newPassword)
     }
 }

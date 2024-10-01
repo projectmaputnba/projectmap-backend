@@ -113,6 +113,9 @@ export class UserService {
     }
 
     async verifyPasswordRecoveryCode(code: number) {
+        if (!code) {
+            throw new HttpException('Código inválido', HttpStatus.BAD_REQUEST)
+        }
         const user = await this.userModel
             .findOne({ verificationCode: code })
             .select('-password')
@@ -132,6 +135,16 @@ export class UserService {
             throw new HttpException('Email no existente', HttpStatus.NOT_FOUND)
         }
         return user
+    }
+
+    async updatePassword(userId: string, newPassword: string) {
+        const user = await this.findById(userId)
+        if (!user) {
+            throw new HttpException('Usuario inexistente', HttpStatus.NOT_FOUND)
+        }
+        user.password = await bcrypt.hash(newPassword, 10)
+        await user.save()
+        return {}
     }
 }
 
