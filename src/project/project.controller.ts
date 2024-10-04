@@ -22,9 +22,10 @@ import { OkrService } from '../herramientas/okr/okr.service'
 import { PestelService } from '../herramientas/pestel/pestel.service'
 import { PorterService } from '../herramientas/porter/porter.service'
 import { QuestionnaireService } from '../herramientas/questionnaire/questionnaire.service'
-import { ChartDto, ProjectDto, UpdateUserRolesDto } from './project.dto'
+import { ProjectDto, UpdateUserRolesDto } from './project.dto'
 import { ProjectService } from './project.service'
 import { isValidPermission, isValidStageType, StageType } from './stage.schema'
+import { OrganizationChart } from './orgChart'
 
 @UseGuards(AuthGuard('jwt'))
 @ApiTags('projects')
@@ -121,7 +122,7 @@ export class ProjectController {
     @Post(':id/organizational-chart')
     async saveOrganizationalChart(
         @Param('id') projectId: string,
-        @Body() chart: ChartDto
+        @Body() chart: OrganizationChart
     ) {
         return this.projectService.addChart(projectId, chart)
     }
