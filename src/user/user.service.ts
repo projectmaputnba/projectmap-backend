@@ -1,4 +1,9 @@
-import { HttpException, HttpStatus, Injectable } from '@nestjs/common'
+import {
+    BadRequestException,
+    HttpException,
+    HttpStatus,
+    Injectable,
+} from '@nestjs/common'
 import { InjectModel } from '@nestjs/mongoose'
 import * as bcrypt from 'bcrypt'
 import { Model } from 'mongoose'
@@ -25,11 +30,15 @@ export class UserService {
         const { email, password } = UserDTO
         const user = await this.userModel.findOne({ email })
 
+        if (!user) {
+            throw new BadRequestException('Usuario inexistente')
+        }
+
         const passwordMatch = await bcrypt.compare(password, user.password)
         if (passwordMatch) return this.sanitizeUser(user)
         else
             throw new HttpException(
-                'Contraseña incorrecta',
+                'Usuario o contraseña incorrectos',
                 HttpStatus.BAD_REQUEST
             )
     }
