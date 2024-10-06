@@ -48,6 +48,8 @@ const productSchema = SchemaFactory.createForClass(Producto)
 
 @Schema()
 export class Ansoff {
+    _id: mongoose.Types.ObjectId
+    
     @Prop({ required: true })
     projectId: string
 

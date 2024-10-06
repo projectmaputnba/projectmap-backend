@@ -20,7 +20,8 @@ export class OkrService {
             throw new HttpException('Invalid horizon', HttpStatus.BAD_REQUEST)
         }
         const orgChart = await this.projectService.getChart(okrDto.projectId)
-        if (!orgChart) {
+        // the project must have a chart if we want the OKR to have an area
+        if (!orgChart && okrDto.areaId) {
             throw new HttpException(
                 'Invalid project id',
                 HttpStatus.BAD_REQUEST
