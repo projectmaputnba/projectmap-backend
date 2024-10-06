@@ -31,16 +31,12 @@ export class UserService {
         const user = await this.userModel.findOne({ email })
 
         if (!user) {
-            throw new BadRequestException('Usuario inexistente')
+            throw new BadRequestException('Usuario o contraseña incorrectos')
         }
 
         const passwordMatch = await bcrypt.compare(password, user.password)
         if (passwordMatch) return this.sanitizeUser(user)
-        else
-            throw new HttpException(
-                'Usuario o contraseña incorrectos',
-                HttpStatus.BAD_REQUEST
-            )
+        else throw new BadRequestException('Usuario o contraseña incorrectos')
     }
 
     private sanitizeUser(user: User) {
