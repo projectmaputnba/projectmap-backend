@@ -213,11 +213,19 @@ export class PorterService {
     }
 
     private formatPreguntas(preguntas: Pregunta[]) {
-        const preguntasFormatted = {}
+        const preguntasFormatted: {
+            [fuerza: string]: {
+                [preguntaId: string]: {
+                    nivelDeConcordancia: string
+                    valoracion: string
+                }
+            }
+        } = {}
         const fuerzas: Array<string> = []
-        preguntas.map((pregunta) => {
-            if (!fuerzas.includes(pregunta.fuerza))
+        preguntas.forEach((pregunta) => {
+            if (!fuerzas.includes(pregunta.fuerza)) {
                 fuerzas.push(pregunta.fuerza)
+            }
         })
 
         fuerzas.forEach((fuerza) => {

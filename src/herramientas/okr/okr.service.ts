@@ -15,7 +15,6 @@ import {
     KeyResultDto,
     KeyStatusDto,
     OkrDto,
-    OkrType,
 } from './okr.dto'
 import { ChecklistKeyResult, KeyResult, KeyStatus, Okr } from './okr.schema'
 
