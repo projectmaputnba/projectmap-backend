@@ -9,7 +9,7 @@ export enum Priority {
     HIGH,
 }
 
-@Schema({ _id: false })
+@Schema()
 export class KeyStatus {
     _id: mongoose.Types.ObjectId
 
@@ -26,7 +26,7 @@ export class KeyStatus {
 }
 export const KeyStatusSchema = SchemaFactory.createForClass(KeyStatus)
 
-@Schema({ _id: false })
+@Schema()
 export class ChecklistKeyStatus {
     _id: mongoose.Types.ObjectId
 
@@ -98,9 +98,9 @@ export class KeyResult extends BaseKeyResult {
     ) {
         super(description, responsible, priority)
         this.goal = goal
-        ;(this.baseline = baseline),
-            (this.frequency = frequency),
-            (this.keyStatus = keyStatus)
+        this.baseline = baseline
+        this.frequency = frequency
+        this.keyStatus = keyStatus
     }
 }
 export const KeyResultSchema = SchemaFactory.createForClass(KeyResult)
@@ -158,6 +158,9 @@ export class Okr {
 
     @Prop({ type: [KeyResultSchema], default: [] })
     keyResults: KeyResult[]
+
+    @Prop({ type: [ChecklistKeyResultSchema], default: [] })
+    checklistKeyResults: ChecklistKeyResult[]
 
     constructor(
         description: string,

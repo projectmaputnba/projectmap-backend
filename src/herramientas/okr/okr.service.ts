@@ -1,12 +1,23 @@
-import { HttpException, HttpStatus, Injectable } from '@nestjs/common'
+import {
+    HttpException,
+    HttpStatus,
+    Injectable,
+    NotFoundException,
+} from '@nestjs/common'
 import { InjectModel } from '@nestjs/mongoose'
 import { Model } from 'mongoose'
-import { KeyResultDto, OkrDto } from './okr.dto'
-import { KeyResult, KeyStatus, Okr } from './okr.schema'
+import { ProjectService } from 'src/project/project.service'
 import { getStatusFromFrequencyAndHorizon } from '../frequency'
 import { Horizon } from '../horizon'
-import { ProjectService } from 'src/project/project.service'
 import { addDateByFrequency, dateToString } from './dates'
+import {
+    ChecklistKeyStatusDto,
+    KeyResultDto,
+    KeyStatusDto,
+    OkrDto,
+    OkrType,
+} from './okr.dto'
+import { ChecklistKeyResult, KeyResult, KeyStatus, Okr } from './okr.schema'
 
 @Injectable()
 export class OkrService {
@@ -54,7 +65,10 @@ export class OkrService {
     }
 
     async editOkr(okrId: string, okrDto: OkrDto) {
-        const okr: Okr = await this.okrModel.findById(okrId).exec()
+        const okr = await this.okrModel.findById(okrId).exec()
+        if (!okr) {
+            throw new NotFoundException()
+        }
 
         okr.area = okrDto.area
         okr.description = okrDto.description
@@ -64,6 +78,9 @@ export class OkrService {
 
     async addKeyResult(okrId: string, keyResultDto: KeyResultDto) {
         const okr = await this.okrModel.findById(okrId).exec()
+        if (!okr) {
+            throw new NotFoundException()
+        }
 
         const keyStatusData = getStatusFromFrequencyAndHorizon(
             keyResultDto.frequency,
@@ -76,7 +93,7 @@ export class OkrService {
             )
         }
         const keyStatus: KeyStatus[] = []
-        for (let i = 0; i < keyStatusData.lengthOfPeriods; i++) {
+        for (let i = 0; i < keyStatusData.lengthOfPeriods!; i++) {
             const newDate = addDateByFrequency(
                 okr.startingDate,
                 keyResultDto.frequency,
@@ -109,39 +126,25 @@ export class OkrService {
         keyResultDto: KeyResultDto
     ) {
         const okr = await this.okrModel.findById(okrId).exec()
+        if (!okr) {
+            throw new NotFoundException()
+        }
+        okr.keyResults
+            .filter((kr) => kr._id.toString() == keyResultId)
+            .forEach((kr) => updateNormalKeyResult(kr, keyResultDto))
 
-        okr.keyResults.forEach((keyResult) => {
-            if (keyResult._id.toString() == keyResultId) {
-                if (keyResultDto.description)
-                    keyResult.description = keyResultDto.description
-
-                if (keyResultDto.responsible)
-                    keyResult.responsible = keyResultDto.responsible
-
-                if (keyResultDto.baseline !== undefined)
-                    keyResult.baseline = keyResultDto.baseline
-
-                if (keyResultDto.goal !== undefined)
-                    keyResult.goal = keyResultDto.goal
-
-                if (keyResultDto.priority !== undefined)
-                    keyResult.priority = keyResultDto.priority
-
-                // frequency cannot be edited
-
-                if (keyResultDto.keyStatus)
-                    keyResultDto.keyStatus.forEach(
-                        (status, index) =>
-                            (keyResult.keyStatus[index].value = status.value)
-                    )
-            }
-        })
+        okr.checklistKeyResults
+            .filter((chckKr) => chckKr._id.toString() == keyResultId)
+            .forEach((chckKr) => updateChecklistKeyResult(chckKr, keyResultDto))
 
         return okr.save()
     }
 
     async removeKeyResult(okrId: string, keyResultId: string) {
         const okr = await this.okrModel.findById(okrId).exec()
+        if (!okr) {
+            throw new NotFoundException()
+        }
 
         okr.keyResults = okr.keyResults.filter(
             (keyResult) => keyResult._id.toString() != keyResultId
@@ -168,4 +171,44 @@ export class OkrService {
             }
         })
     }
+}
+
+const updateNormalKeyResult = (
+    keyResult: KeyResult,
+    keyResultDto: KeyResultDto
+) => {
+    updateBaseKeyResult(keyResult, keyResultDto)
+    if (keyResultDto.baseline !== undefined)
+        keyResult.baseline = keyResultDto.baseline
+    if (keyResultDto.goal !== undefined) keyResult.goal = keyResultDto.goal
+    // frequency cannot be edited
+    if (keyResultDto.keyStatus)
+        keyResultDto.keyStatus.forEach((status, index) => {
+            const newStatus = status as KeyStatusDto
+            keyResult.keyStatus[index].value = newStatus.value
+        })
+}
+
+const updateBaseKeyResult = (
+    keyResult: KeyResult | ChecklistKeyResult,
+    keyResultDto: KeyResultDto
+) => {
+    if (keyResultDto.description)
+        keyResult.description = keyResultDto.description
+    if (keyResultDto.responsible)
+        keyResult.responsible = keyResultDto.responsible
+    if (keyResultDto.priority !== undefined)
+        keyResult.priority = keyResultDto.priority
+}
+
+const updateChecklistKeyResult = (
+    keyResult: ChecklistKeyResult,
+    keyResultDto: KeyResultDto
+) => {
+    updateBaseKeyResult(keyResult, keyResultDto)
+    if (keyResultDto.keyStatus)
+        keyResultDto.keyStatus.forEach((status, index) => {
+            const newStatus = status as ChecklistKeyStatusDto
+            keyResult.keyStatus[index].checked = newStatus.checked
+        })
 }
