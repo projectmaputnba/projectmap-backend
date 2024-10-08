@@ -17,6 +17,9 @@ import { ContinuousImprovementModule } from './herramientas/continuousImprovemen
 import { ProjectStageUserEditionMiddleware } from './middleware/project.middleware'
 
 dotenv.config()
+if (!process.env.MONGO_URI || !process.env.SECRET_KEY) {
+    throw new Error('Missing env vars')
+}
 
 @Module({
     imports: [
