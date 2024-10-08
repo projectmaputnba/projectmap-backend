@@ -41,11 +41,9 @@ export class UserService {
     }
 
     private sanitizeUser(user: User) {
-        if (user == null) {
-            return new User()
-        }
-        user.password = undefined
-        return user
+        const newUser = Object.create(user)
+        delete newUser.password //check
+        return newUser
     }
 
     async findByEmail(email: string) {

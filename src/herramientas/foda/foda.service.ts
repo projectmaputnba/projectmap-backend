@@ -1,4 +1,9 @@
-import { HttpException, HttpStatus, Injectable, NotFoundException } from '@nestjs/common'
+import {
+    HttpException,
+    HttpStatus,
+    Injectable,
+    NotFoundException,
+} from '@nestjs/common'
 import { InjectModel } from '@nestjs/mongoose'
 import { Model } from 'mongoose'
 import { Area, Importancia, Intensidad, Tendencia, Urgencia } from './enums'
@@ -12,13 +17,16 @@ export class FodaService {
 
     async getPreSeeds() {
         const preSeeds = Preseeds.getPreseeds
-        const preSeedsFormated = {}
+        const preSeedsFormated = new Map<
+            Area,
+            Array<{ descripcion: string; consejo: string }>
+        >()
 
         preSeeds.forEach((preSeed) => {
             const { area, descripcion, consejo } = preSeed
-            const list = preSeedsFormated[area]
-            if (!list) preSeedsFormated[area] = []
-            preSeedsFormated[area].push({ descripcion, consejo })
+            const list = preSeedsFormated.get(area)
+            if (!list) preSeedsFormated.set(area, [])
+            preSeedsFormated.set(area, [...list!, { descripcion, consejo }])
         })
 
         return preSeedsFormated

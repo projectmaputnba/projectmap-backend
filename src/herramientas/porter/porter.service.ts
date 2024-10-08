@@ -180,7 +180,7 @@ export class PorterService {
         const consejos = []
         const consejosDeFuerza = Consejos.getConsejos(fuerza)
         for (const [id, consejo] of Object.entries(consejosDeFuerza)) {
-            const puntaje = preguntasConPuntaje.get(consejo.pregunta)
+            const puntaje = preguntasConPuntaje.get(consejo.pregunta)!
             const factor = puntaje + Number(id) / 10000
             if (puntaje)
                 consejos.push({ consejo: consejo.consejo, factor: factor })
