@@ -1,4 +1,4 @@
-import { HttpException, HttpStatus, Injectable } from '@nestjs/common'
+import { HttpException, HttpStatus, Injectable, NotFoundException } from '@nestjs/common'
 import { InjectModel } from '@nestjs/mongoose'
 import { Model } from 'mongoose'
 import { Area, Importancia, Intensidad, Tendencia, Urgencia } from './enums'
@@ -33,7 +33,7 @@ export class FodaService {
         }
     }
 
-    async getAllByProjectId(projectId) {
+    async getAllByProjectId(projectId: string) {
         return this.fodaModel
             .find({ projectId: projectId })
             .sort({ createdAt: 'desc' })
@@ -46,6 +46,9 @@ export class FodaService {
 
     async insertFactor(id: string, factorDto: FactorDto) {
         const foda = await this.fodaModel.findById(id)
+        if (!foda) {
+            throw new NotFoundException()
+        }
         const factor = new Factor(
             factorDto.descripcion,
             factorDto.area as Area,
@@ -67,6 +70,9 @@ export class FodaService {
 
     async update(id: string, updated: FodaDto) {
         const foda = await this.fodaModel.findById(id)
+        if (!foda) {
+            throw new NotFoundException()
+        }
         foda.titulo = updated.titulo
 
         return new this.fodaModel(foda).save()
@@ -80,6 +86,9 @@ export class FodaService {
 
     async deleteFactor(id: string, idFactor: string) {
         const foda = await this.fodaModel.findById(id)
+        if (!foda) {
+            throw new NotFoundException()
+        }
         const fodaObject = foda.toObject()
         const factores = fodaObject.factores.filter(
             (factor) => factor._id.toString() != idFactor
@@ -92,9 +101,15 @@ export class FodaService {
 
     async updateFactor(id: string, idFactor: string, updatedFactor: FactorDto) {
         const foda = await this.fodaModel.findById(id).then((foda) => {
+            if (!foda) {
+                throw new NotFoundException()
+            }
             const factor = foda.factores.find(
                 (factor) => factor._id.toString() == idFactor
             )
+            if (!factor) {
+                throw new NotFoundException()
+            }
             if (updatedFactor.area) factor.area = updatedFactor.area as Area
             if (updatedFactor.importancia)
                 factor.importancia = updatedFactor.importancia as Importancia

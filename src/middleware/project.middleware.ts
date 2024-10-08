@@ -45,12 +45,11 @@ export class ProjectStageUserEditionMiddleware implements NestMiddleware {
 
         const stage = fromToolToStage(tool)
 
-        const userStagePermission =
-            await this.projectService.getUserStagePermission(
-                projectId,
-                email,
-                stage
-            )
+        const userStagePermission = this.projectService.getUserStagePermission(
+            projectId,
+            email,
+            stage
+        )
 
         if (
             !userStagePermission ||

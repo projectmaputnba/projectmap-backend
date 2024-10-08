@@ -193,10 +193,11 @@ OkrSchema.pre('save', function (next) {
 })
 
 function getLastNonZeroValue(keyStatus: KeyStatus[]) {
-    if (!keyStatus.some((ks) => ks.value !== 0)) {
+    const nonZeroValues = keyStatus.filter((ks) => ks.value !== 0)
+    if (nonZeroValues.length == 0) {
         return 0
     }
-    return keyStatus.filter((ks) => ks.value !== 0).at(-1).value
+    return nonZeroValues.at(-1)!.value
 }
 
 function limitBetween1And100(x: number) {

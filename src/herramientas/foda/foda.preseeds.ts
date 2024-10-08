@@ -2,7 +2,7 @@ import { Preesed } from './Preesed'
 import { Area } from './enums'
 
 export class Preseeds {
-    static getPreseeds = [
+        static getPreseeds = [
         new Preesed(
             Area.FORTALEZA,
             'Producto de alta calidad',
