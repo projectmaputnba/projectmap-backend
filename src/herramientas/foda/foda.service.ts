@@ -26,7 +26,10 @@ export class FodaService {
             const { area, descripcion, consejo } = preSeed
             const list = preSeedsFormated.get(area)
             if (!list) preSeedsFormated.set(area, [])
-            preSeedsFormated.set(area, [...list!, { descripcion, consejo }])
+            preSeedsFormated.set(area, [
+                ...preSeedsFormated.get(area)!,
+                { descripcion, consejo },
+            ])
         })
 
         return preSeedsFormated

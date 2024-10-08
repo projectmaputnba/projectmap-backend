@@ -36,7 +36,7 @@ export class Producto {
         this.nombre = nombre
         this.situacionDelMercado = situacionDelMercado.valueOf()
         this.situacionDelProducto = situacionDelProducto.valueOf()
-        this.exito = exito.valueOf()
+        this.exito = exito
         this.estrategia = Estrategia.calculate(
             this.situacionDelMercado as SituacionDelMercado,
             this.situacionDelProducto as SituacionDelProducto

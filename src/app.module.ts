@@ -20,9 +20,11 @@ dotenv.config()
 if (
     !process.env.MONGO_URI ||
     !process.env.SECRET_KEY ||
-    !process.env.PROJECTMAP_WEBPAGE
+    !process.env.PROJECTMAP_WEBPAGE ||
+    !process.env.NODEMAILER_GOOGLE_APP_USER ||
+    !process.env.NODEMAILER_GOOGLE_APP_PASSWORD
 ) {
-    throw new Error('Missing env vars')
+    throw new Error('missing env vars')
 }
 
 @Module({
