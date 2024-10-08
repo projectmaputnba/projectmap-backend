@@ -118,6 +118,16 @@ KeyResultSchema.pre('save', function (next) {
 export class ChecklistKeyResult extends BaseKeyResult {
     @Prop({ type: [ChecklistKeyStatusSchema], default: [] })
     keyStatus: ChecklistKeyStatus[]
+
+    constructor(
+        description: string,
+        responsible: string,
+        priority = Priority.MEDIUM,
+        keyStatus: ChecklistKeyStatus[]
+    ) {
+        super(description, responsible, priority)
+        this.keyStatus = keyStatus
+    }
 }
 export const ChecklistKeyResultSchema =
     SchemaFactory.createForClass(ChecklistKeyResult)

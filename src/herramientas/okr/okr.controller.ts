@@ -47,7 +47,6 @@ export class OkrController {
         @Param('okrId') okrId: string,
         @Body() keyResultDto: KeyResultDto
     ) {
-        // switch here?
         const okr = await this.okrService.addKeyResult(okrId, keyResultDto)
         return okr
     }

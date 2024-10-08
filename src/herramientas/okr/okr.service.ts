@@ -15,8 +15,15 @@ import {
     KeyResultDto,
     KeyStatusDto,
     OkrDto,
+    OkrType,
 } from './okr.dto'
-import { ChecklistKeyResult, KeyResult, KeyStatus, Okr } from './okr.schema'
+import {
+    ChecklistKeyResult,
+    ChecklistKeyStatus,
+    KeyResult,
+    KeyStatus,
+    Okr,
+} from './okr.schema'
 
 @Injectable()
 export class OkrService {
@@ -80,41 +87,16 @@ export class OkrService {
         if (!okr) {
             throw new NotFoundException()
         }
-
-        const keyStatusData = getStatusFromFrequencyAndHorizon(
-            keyResultDto.frequency,
-            okr.horizon
-        )
-        if (keyStatusData.invalid) {
-            throw new HttpException(
-                'Invalid frequency or horizon',
-                HttpStatus.BAD_REQUEST
-            )
+        switch (keyResultDto.type as OkrType) {
+            case OkrType.NORMAL:
+                okr.keyResults.push(this.createKeyResult(okr, keyResultDto))
+                break
+            case OkrType.CHECKLIST:
+                okr.checklistKeyResults.push(
+                    this.createChecklistKeyResult(okr, keyResultDto)
+                )
+                break
         }
-        const keyStatus: KeyStatus[] = []
-        for (let i = 0; i < keyStatusData.lengthOfPeriods!; i++) {
-            const newDate = addDateByFrequency(
-                okr.startingDate,
-                keyResultDto.frequency,
-                i
-            )
-            const stringDate = dateToString(newDate)
-            keyStatus.push(new KeyStatus(stringDate, 0))
-        }
-
-        const keyResult = new KeyResult(
-            keyResultDto.description,
-            keyResultDto.responsible,
-            keyResultDto.baseline,
-            keyResultDto.goal,
-            keyResultDto.frequency,
-            keyResultDto.priority,
-            keyStatus
-        )
-
-        keyResult.keyStatus = keyStatus
-
-        okr.keyResults.push(keyResult)
 
         return okr.save()
     }
@@ -169,6 +151,54 @@ export class OkrService {
                 okr.save()
             }
         })
+    }
+
+    private createKeyResult(okr: Okr, keyResultDto: KeyResultDto) {
+        const keyStatusData = getStatusFromFrequencyAndHorizon(
+            keyResultDto.frequency,
+            okr.horizon
+        )
+        if (keyStatusData.invalid) {
+            throw new HttpException(
+                'Invalid frequency or horizon',
+                HttpStatus.BAD_REQUEST
+            )
+        }
+        const keyStatus: KeyStatus[] = []
+        for (let i = 0; i < keyStatusData.lengthOfPeriods!; i++) {
+            const newDate = addDateByFrequency(
+                okr.startingDate,
+                keyResultDto.frequency,
+                i
+            )
+            const stringDate = dateToString(newDate)
+            keyStatus.push(new KeyStatus(stringDate, 0))
+        }
+
+        return new KeyResult(
+            keyResultDto.description,
+            keyResultDto.responsible,
+            keyResultDto.baseline,
+            keyResultDto.goal,
+            keyResultDto.frequency,
+            keyResultDto.priority,
+            keyStatus
+        )
+    }
+
+    private createChecklistKeyResult(okr: Okr, keyResultDto: KeyResultDto) {
+        const keyStatus: ChecklistKeyStatus[] = []
+        keyResultDto.keyStatus.forEach((checkKr) => {
+            const kr = checkKr as ChecklistKeyStatusDto
+            keyStatus.push(new ChecklistKeyStatus(kr.description, false))
+        })
+
+        return new ChecklistKeyResult(
+            keyResultDto.description,
+            keyResultDto.responsible,
+            keyResultDto.baseline,
+            keyStatus
+        )
     }
 }
 
