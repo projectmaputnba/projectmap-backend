@@ -1,4 +1,5 @@
 import {
+    BadRequestException,
     HttpException,
     HttpStatus,
     Injectable,
@@ -96,6 +97,8 @@ export class OkrService {
                     this.createChecklistKeyResult(okr, keyResultDto)
                 )
                 break
+            default:
+                throw new BadRequestException('Invalid key result type')
         }
 
         return okr.save()
