@@ -1,5 +1,4 @@
 import {
-    BadRequestException,
     HttpException,
     HttpStatus,
     Injectable,
@@ -98,7 +97,10 @@ export class OkrService {
                 )
                 break
             default:
-                throw new BadRequestException('Invalid key result type')
+                // TODO: when frontend sends type, delete this default case
+                okr.keyResults.push(this.createKeyResult(okr, keyResultDto))
+                // throw new BadRequestException('Invalid key result type')
+                break
         }
 
         return okr.save()
