@@ -211,5 +211,5 @@ function getLastNonZeroValue(keyStatus: KeyStatus[]) {
 }
 
 function limitBetween(x: number, min: number, max: number) {
-    return Math.max(min, Math.min(100, max))
+    return Math.max(min, Math.min(max, x))
 }
