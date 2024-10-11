@@ -109,7 +109,7 @@ KeyResultSchema.pre('save', function (next) {
     const progress = Math.round(
         ((lastValue - this.baseline) * 100) / (this.goal - this.baseline)
     )
-    this.progress = limitBetween(progress, 1, 100)
+    this.progress = limitBetween(progress, 0, 100)
     this.currentScore = lastValue
     next()
 })
@@ -136,7 +136,7 @@ ChecklistKeyResultSchema.pre('save', function (next) {
     const checkedCount = this.keyStatus.filter((ks) => ks.checked).length
     const progress = Math.round(checkedCount / this.keyStatus.length)
 
-    this.progress = limitBetween(progress, 1, 100)
+    this.progress = limitBetween(progress, 0, 100)
     this.currentScore = checkedCount
     next()
 })
@@ -197,7 +197,7 @@ OkrSchema.pre('save', function (next) {
                 .map((kr) => kr.progress)
                 .reduce((a, b) => a + b, 0) / this.keyResults.length
         )
-        this.progress = limitBetween(progress, 1, 100)
+        this.progress = limitBetween(progress, 0, 100)
     }
     next()
 })
