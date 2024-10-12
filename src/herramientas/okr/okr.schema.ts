@@ -169,6 +169,9 @@ export class Okr {
     @Prop({ type: [KeyResultSchema], default: [] })
     keyResults: KeyResult[]
 
+    @Prop({ type: [mongoose.Schema.Types.ObjectId], ref: 'Okr' })
+    childOkrs: Okr[]
+
     @Prop({ type: [ChecklistKeyResultSchema], default: [] })
     checklistKeyResults: ChecklistKeyResult[]
 
