@@ -53,6 +53,7 @@ export class AppModule {
         consumer
             .apply(ProjectStageUserEditionMiddleware)
             .exclude('questionnaires/questions')
+            .exclude('pestel/options')
             .forRoutes(
                 'foda',
                 'porter',
