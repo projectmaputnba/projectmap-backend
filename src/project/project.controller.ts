@@ -62,8 +62,8 @@ export class ProjectController {
 
         const [projects, total] = await this.projectService.findUserProjects(
             id,
-            limit,
-            offset,
+            limit || 10,
+            offset || 0,
             search
         )
 
