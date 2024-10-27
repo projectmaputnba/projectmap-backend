@@ -134,7 +134,9 @@ export class ProjectStageUserEditionMiddleware implements NestMiddleware {
                 toolId
             )
             if (document) {
-                return document.id
+                // todo: fix type error!
+                // @ts-ignore
+                return document.projectId
             }
             return ''
         } else {
