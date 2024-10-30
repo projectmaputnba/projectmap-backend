@@ -16,6 +16,7 @@ import { defaultStages, Permission, Stage } from './stage.schema'
 import { User } from 'src/user/user.schema'
 import { getParentsFromNode, OrganizationChart } from './orgChart'
 import { OkrService } from 'src/herramientas/okr/okr.service'
+import { insensitiveRegExp } from './utils/escape_string'
 
 type ProjectQuery = FilterQuery<{
     'participants.user'?: string
@@ -73,7 +74,7 @@ export class ProjectService {
 
         if (search) {
             query = {
-                $and: [query, { name: { $regex: new RegExp(search, 'i') } }],
+                $and: [query, { name: { $regex: insensitiveRegExp(search) } }],
             } as ProjectQuery
         }
 

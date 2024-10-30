@@ -30,10 +30,10 @@ import { PdcaService } from 'src/herramientas/pdca/pdca.service'
 
 @UseGuards(AuthGuard('jwt'))
 @Injectable()
-export class ProjectStageUserEditionMiddleware implements NestMiddleware {
+export class ToolPermissionsMiddleware implements NestMiddleware {
     private toolServiceMap: Map<
         Tool,
-        (toolId: string) => Promise<Document | null>
+        (toolId: string) => Promise<(Document & { projectId: string }) | null>
     >
     constructor(
         private okrService: OkrService,
@@ -134,8 +134,6 @@ export class ProjectStageUserEditionMiddleware implements NestMiddleware {
                 toolId
             )
             if (document) {
-                // todo: fix type error!
-                // @ts-ignore
                 return document.projectId
             }
             return ''
