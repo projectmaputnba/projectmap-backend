@@ -52,8 +52,16 @@ export class AppModule {
     configure(consumer: MiddlewareConsumer) {
         consumer
             .apply(ProjectStageUserEditionMiddleware)
-            .exclude('questionnaires/questions')
-            .exclude('pestel/options')
+            .exclude(
+                'questionnaires/questions',
+                'pestel/options',
+                'ansoff/options',
+                'balanced-scorecards/options',
+                'foda/options',
+                'foda/preSeeds',
+                'porter/options',
+                'porter/preguntas',
+            )
             .forRoutes(
                 'foda',
                 'porter',
