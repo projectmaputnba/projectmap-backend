@@ -50,6 +50,21 @@ export class BalancedScorecardService {
             )
     }
 
+    async deleteAllWithProjectId(projectId: string) {
+        const result = await this.balancedScorecardModel.deleteMany({
+            projectId,
+        })
+
+        if (result && result.acknowledged) {
+            return projectId
+        } else {
+            throw new HttpException(
+                'Balanced Scorecard delete error',
+                HttpStatus.INTERNAL_SERVER_ERROR
+            )
+        }
+    }
+
     async findById(balancedScorecardId: string) {
         return this.balancedScorecardModel.findById(balancedScorecardId)
     }

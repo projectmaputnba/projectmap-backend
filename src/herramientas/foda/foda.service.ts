@@ -95,6 +95,19 @@ export class FodaService {
         else throw new HttpException('Foda not found', HttpStatus.NOT_FOUND)
     }
 
+    async deleteAllWithProjectId(projectId: string) {
+        const result = await this.fodaModel.deleteMany({ projectId })
+
+        if (result && result.acknowledged) {
+            return projectId
+        } else {
+            throw new HttpException(
+                'Foda delete error',
+                HttpStatus.INTERNAL_SERVER_ERROR
+            )
+        }
+    }
+
     async deleteFactor(id: string, idFactor: string) {
         const foda = await this.fodaModel.findById(id)
         if (!foda) {

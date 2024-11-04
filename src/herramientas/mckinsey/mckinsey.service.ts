@@ -96,4 +96,17 @@ export class MckinseyService {
         if (result.deletedCount) return id
         else throw new HttpException('McKinsey not found', HttpStatus.NOT_FOUND)
     }
+
+    async deleteAllWithProjectId(projectId: string) {
+        const result = await this.mckinseyModel.deleteMany({ projectId })
+
+        if (result && result.acknowledged) {
+            return projectId
+        } else {
+            throw new HttpException(
+                'McKinsey delete error',
+                HttpStatus.INTERNAL_SERVER_ERROR
+            )
+        }
+    }
 }

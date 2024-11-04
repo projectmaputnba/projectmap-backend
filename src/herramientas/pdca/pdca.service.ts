@@ -1,5 +1,7 @@
 import {
     BadRequestException,
+    HttpException,
+    HttpStatus,
     Injectable,
     NotFoundException,
 } from '@nestjs/common'
@@ -67,6 +69,19 @@ export class PdcaService {
             return {}
         } else {
             throw new NotFoundException()
+        }
+    }
+
+    async deleteAllWithProjectId(projectId: string) {
+        const result = await this.pdcaModel.deleteMany({ projectId })
+
+        if (result && result.acknowledged) {
+            return projectId
+        } else {
+            throw new HttpException(
+                'PDCA delete error',
+                HttpStatus.INTERNAL_SERVER_ERROR
+            )
         }
     }
 

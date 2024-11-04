@@ -222,6 +222,19 @@ export class OkrService {
         }
     }
 
+    async deleteAllWithProjectId(projectId: string) {
+        const result = await this.okrModel.deleteMany({ projectId })
+
+        if (result && result.acknowledged) {
+            return projectId
+        } else {
+            throw new HttpException(
+                'Okr delete error',
+                HttpStatus.INTERNAL_SERVER_ERROR
+            )
+        }
+    }
+
     async updateMissingAreas(projectId: string, deletedAreas: string[]) {
         const okrs = await this.getAllByProjectId(projectId)
         okrs.forEach((okr) => {
