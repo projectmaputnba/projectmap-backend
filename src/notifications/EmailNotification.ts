@@ -15,18 +15,23 @@ export abstract class EmailNotification {
                 pass: process.env.NODEMAILER_GOOGLE_APP_PASSWORD,
             },
         })
-        transporter.sendMail(
-            {
-                to: destination,
-                subject: this.subject,
-                html: this.bodyText,
-            },
-            // eslint-disable-next-line @typescript-eslint/no-unused-vars
-            (err, _) => {
-                if (err) {
-                    console.error('Error sending email: ', err)
+
+        await new Promise((resolve, reject) => {
+            transporter.sendMail(
+                {
+                    to: destination,
+                    subject: this.subject,
+                    html: this.bodyText,
+                },
+                (err, info) => {
+                    if (err) {
+                        console.error(err)
+                        reject(err)
+                    } else {
+                        resolve(info)
+                    }
                 }
-            }
-        )
+            )
+        })
     }
 }
