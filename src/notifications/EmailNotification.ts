@@ -24,7 +24,7 @@ export abstract class EmailNotification {
             // eslint-disable-next-line @typescript-eslint/no-unused-vars
             (err, _) => {
                 if (err) {
-                    console.log('Error sending email: ', err)
+                    console.error('Error sending email: ', err)
                 }
             }
         )
