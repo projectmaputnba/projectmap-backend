@@ -128,7 +128,7 @@ export class UserService {
         user.verificationCode = code
 
         user.save()
-        new RecoverPasswordNotification(user.email, code).notifyUser()
+        await new RecoverPasswordNotification(user.email, code).notifyUser()
 
         return
     }
