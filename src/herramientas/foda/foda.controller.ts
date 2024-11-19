@@ -28,7 +28,7 @@ export class FodaController {
     @Get('preSeeds')
     async getPreSeeds() {
         const preSeeds = await this.fodaService.getPreSeeds()
-        return preSeeds
+        return Object.fromEntries(preSeeds)
     }
 
     @Get(':id')
