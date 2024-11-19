@@ -16,10 +16,23 @@ export abstract class EmailNotification {
             },
         })
 
-        await transporter.sendMail({
-            to: destination,
-            subject: this.subject,
-            html: this.bodyText,
+        await new Promise((resolve, reject) => {
+            transporter.sendMail(
+                {
+                    to: destination,
+                    subject: this.subject,
+                    html: this.bodyText,
+                },
+                (err, info) => {
+                    if (err) {
+                        console.error(err)
+                        reject(err)
+                    } else {
+                        console.log(info)
+                        resolve(info)
+                    }
+                }
+            )
         })
     }
 }
