@@ -1,4 +1,6 @@
 @startuml
+skinparam dpi 50
+
 ' Controladores
 class AuthController {
     + hiddenInformation()
