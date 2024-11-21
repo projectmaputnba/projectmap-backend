@@ -111,11 +111,13 @@ objectiveSchema.pre('save', function (next) {
                 (this.baseline + currentStep)
             ).toFixed(2)
 
-            if (this.progress > lastProgress) {
-                this.trend = Trend.Upwards
-            } else if (this.progress < lastProgress) {
-                this.trend = Trend.Downwards
-            } else this.trend = Trend.Stable
+            if (this.progress != lastProgress) {
+                if (this.progress > lastProgress) {
+                    this.trend = Trend.Upwards
+                } else if (this.progress < lastProgress) {
+                    this.trend = Trend.Downwards
+                } else this.trend = Trend.Stable
+            }
 
             if (dev > -5) this.deviation = Deviation.None
             else if (dev >= -30) this.deviation = Deviation.Acceptable
