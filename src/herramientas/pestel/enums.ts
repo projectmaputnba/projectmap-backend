@@ -19,8 +19,8 @@ export enum Intensidad {
     'Muy fuerte' = 'Muy fuerte',
     'Fuerte' = 'Fuerte',
     'Promedio' = 'Promedio',
-    'Debil' = 'Debil',
-    'Muy debil' = 'Muy debil',
+    'Debil' = 'Débil',
+    'Muy debil' = 'Muy débil',
 }
 
 export enum Tendencia {
@@ -28,5 +28,5 @@ export enum Tendencia {
     'Mejora' = 'Mejora',
     'Se mantiene' = 'Se mantiene',
     'Empeora' = 'Empeora',
-    'Empeora Mucho' = 'Empeora Mucho',
+    'Empeora Mucho' = 'Empeora mucho',
 }
