@@ -11,7 +11,7 @@ export class Preguntas {
         {
             id: 2,
             pregunta:
-                '¿Los competidores presenten, satisfacen a todo el mercado?',
+                '¿Los competidores presentes satisfacen a todo el mercado?',
         },
         {
             id: 3,
@@ -68,7 +68,7 @@ export class Preguntas {
         {
             id: 3,
             pregunta:
-                '¿El perfil profesional requerido para realizar su actividad económica, es fácil de encontrar?',
+                '¿El perfil profesional requerido para realizar su actividad económica es fácil de encontrar?',
         },
         {
             id: 4,
@@ -78,7 +78,7 @@ export class Preguntas {
         {
             id: 5,
             pregunta:
-                '¿Tiene dificultad para sustituir sus proveedores por otros? (Sea por temas de calidad, precio, etc)',
+                '¿Tiene dificultad para sustituir sus proveedores por otros? (Sea por temas de calidad, precio, etc.)',
         },
         {
             id: 6,
@@ -91,7 +91,7 @@ export class Preguntas {
         {
             id: 1,
             pregunta:
-                '¿Es el costo para iniciar un nuevo negocio dentro de su industria es baja?',
+                '¿Es el costo para iniciar un nuevo negocio dentro de su industria bajo?',
         },
         {
             id: 2,
@@ -124,7 +124,7 @@ export class Preguntas {
         {
             id: 2,
             pregunta:
-                '¿Los productos sustitutos tienen un grado alto de innovación en comparación con sus productos?',
+                '¿Tienen los productos sustitutos un grado alto de innovación en comparación con sus productos?',
         },
         {
             id: 3,
@@ -134,7 +134,7 @@ export class Preguntas {
         {
             id: 4,
             pregunta:
-                '¿El costo de cambio para sus clientes a estos productos sustitutos, es bajo?',
+                '¿El costo de cambio para sus clientes a estos productos sustitutos es bajo?',
         },
         {
             id: 5,

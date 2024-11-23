@@ -39,7 +39,7 @@ export class Consejos {
         },
         8: {
             consejo:
-                'Siempre este en la búsqueda de nuevos competidores, aunque este artículo en cuestión no sea totalmente importante.',
+                'Siempre esté en la búsqueda de nuevos competidores, aunque este artículo en cuestión no sea totalmente importante.',
             pregunta: 5,
         },
     }
@@ -67,7 +67,7 @@ export class Consejos {
         },
         5: {
             consejo:
-                'Piense en formas alternativas de producción para reducir costos, permitiéndole a sus clientes adquirir sus productos más baratos. Mantenga su margen de ganancia constante.',
+                'Piense en formas alternativas de producción para reducir costos, permitiéndole a sus clientes adquirir sus productos a un menor precio. Mantenga su margen de ganancia constante.',
             pregunta: 4,
         },
         6: {
@@ -110,7 +110,7 @@ export class Consejos {
         },
         5: {
             consejo:
-                'Haga una lista de todos sus proveedores, analice pros y contras de los mismos y como su desaparición de los mismos afectaría a su empresa.',
+                'Haga una lista de todos sus proveedores, analice pros y contras de los mismos y cómo su desaparición de los mismos afectaría a su empresa.',
             pregunta: 6,
         },
         6: {

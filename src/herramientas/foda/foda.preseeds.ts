@@ -6,7 +6,7 @@ export class Preseeds {
         new Preesed(
             Area.FORTALEZA,
             'Producto de alta calidad',
-            'Si la alta calidad de su producto representa el valor agregado diferenciativo del mismo, busque mantenerlo para no perder competitividad. De no serlo, no le de prioridad absoluta sobre los costos.'
+            'Si la alta calidad de su producto representa el valor agregado diferenciativo del mismo, busque mantenerlo para no perder competitividad. De no serlo, no le dé prioridad absoluta sobre los costos.'
         ),
         new Preesed(
             Area.FORTALEZA,
@@ -36,7 +36,7 @@ export class Preseeds {
         new Preesed(
             Area.FORTALEZA,
             'Gran calidad de soporte al cliente',
-            'Dependiendo de la naturaleza de su producto, mantener una buena calidad de soporte al cliente puede ser esencial. Si su producto es un servicio o es de calidad baja u manufactura precaria, dele más importancia a mantener esta calidad.'
+            'Dependiendo de la naturaleza de su producto, mantener una buena calidad de soporte al cliente puede ser esencial. Si su producto es un servicio o es de calidad baja o manufactura precaria, dele más importancia a mantener esta calidad.'
         ),
         new Preesed(
             Area.OPORTUNIDAD,
@@ -56,7 +56,7 @@ export class Preseeds {
         new Preesed(
             Area.DEBILIDAD,
             'Percepción de producto de baja calidad',
-            'Un producto con percepción negativa puede representar un gran problema a la hora de compararse con competidores. Si el problema es simplemente la percepción, busque generar campañas publicitarias remarcando los positivos de su producto. Si la calidad de su producto es realmente baja busque o remediarlo, o producir su producto en escala o bajar los precios para poder competir.'
+            'Un producto con percepción negativa puede representar un gran problema a la hora de compararse con competidores. Si el problema es simplemente la percepción, busque generar campañas publicitarias remarcando los positivos de su producto. Si la calidad de su producto es realmente baja busque o remediarlo, o producir su producto en escala, o bajar los precios para poder competir.'
         ),
         new Preesed(
             Area.DEBILIDAD,
@@ -71,22 +71,22 @@ export class Preseeds {
         new Preesed(
             Area.DEBILIDAD,
             'Poca cantidad de clientes',
-            'Si su base es pequeña, debe hacer todo lo que pueda para ampliarla o para afianzarla. No puede darse el lujo de perder clientela, por lo que su producto o servicio debe ser de calidad o irremplazable. Busque utilizar campañas de marketing si el problema que se tiene es la visibilidad.'
+            'Si su base es pequeña, debe hacer todo lo que pueda para ampliarla o para afianzarla. No puede darse el lujo de perder clientela, por lo que su producto o servicio debe ser de calidad o irreemplazable. Busque utilizar campañas de marketing si el problema que se tiene es la visibilidad.'
         ),
         new Preesed(
             Area.DEBILIDAD,
             'Producto caro',
-            'Dependiendo de su producto, busque o sacrifique calidad por costo, o generar la percepción de un producto de lujo. Vale aclarar que para que esta última estrategia funcione, el producto debe ser considerablemente mejor a sus alternativas.'
+            'Dependiendo de su producto, busque o sacrificar calidad por costo, o generar la percepción de un producto de lujo. Vale aclarar que para que esta última estrategia funcione, el producto debe ser considerablemente mejor a sus alternativas.'
         ),
         new Preesed(
             Area.DEBILIDAD,
             'Producto de uso secundario',
-            'Su producto es de uso secundario, por lo que en momentos de crisis sus ventas se verán gravemente afectadas. Planee acorde, intente establecerse como un producto de necesidad.'
+            'Su producto es de uso secundario, por lo que en momentos de crisis sus ventas se verán gravemente afectadas. Planee de manera acorde, intente establecerse como un producto de necesidad.'
         ),
         new Preesed(
             Area.DEBILIDAD,
             'Mal soporte al cliente',
-            'Extremadamente problemático si su producto es de mala calidad u es un servicio. Necesita invertir o en su producto o en su suporte, ambas no pueden coexistir (a menos que su producto no sea reemplazable.'
+            'Extremadamente problemático si su producto es de mala calidad o es un servicio. Necesita invertir o en su producto o en su soporte, ambas no pueden coexistir (a menos que su producto no sea reemplazable).'
         ),
         new Preesed(
             Area.AMENAZA,
@@ -101,12 +101,12 @@ export class Preseeds {
         new Preesed(
             Area.AMENAZA,
             'Aparición de imitaciones baratas consumiendo mercado',
-            'La economía de escala de sustitutos baratos son una amenaza constante. Tenga claro cuáles son sus ventajas y utilice el marketing a su favor. Deje en claro que estos productos no son sustitutos, sino productos inferiores a evitar a toda costa.'
+            'La economía de escala de sustitutos baratos es una amenaza constante. Tenga claro cuáles son sus ventajas y utilice el marketing a su favor. Deje en claro que estos productos no son sustitutos, sino productos inferiores a evitar a toda costa.'
         ),
         new Preesed(
             Area.AMENAZA,
             'Aparición de productos sustitutos superiores',
-            'La posibilidad de aparición productos superiores debe ser algo que usted tenga en su mente constantemente. Busque oportunidades de mejora donde las haya, pero si un producto es claro y absolutamente superior no busque competir a toda costa. Quizá sea mejor entregar el mercado “de lujo” y apelar a consumidores de menos poderío económico.'
+            'La posibilidad de aparición de productos superiores debe ser algo que usted tenga en su mente constantemente. Busque oportunidades de mejora donde las haya, pero si un producto es clara y absolutamente superior no busque competir a toda costa. Quizá sea mejor entregar el mercado “de lujo” y apelar a consumidores de menos poderío económico.'
         ),
         new Preesed(
             Area.AMENAZA,
