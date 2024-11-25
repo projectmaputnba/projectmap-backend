@@ -101,7 +101,7 @@ export class OkrService {
         }
         const project = (await this.projectService.getOne(okr.projectId))!
         // I say to add validation: cannot add two areas with same name -> name unique, otherwise this will get more than one
-        const areaNode = project.chart.nodes.find(
+        const areaNode = project.chart?.nodes.find(
             (n) => n.data.label == okr.area
         )
         if (!areaNode) {
