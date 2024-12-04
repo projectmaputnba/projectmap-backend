@@ -3,8 +3,8 @@
 ## Installation
 
 ```bash
-git clone https://github.com/jschuhmann47/projectMap-Backend.git
-cd projectMap-Backend
+git clone git@github.com:projectmaputnba/projectmap-backend.git
+cd projectmap-backend
 npm install
 ```
 
